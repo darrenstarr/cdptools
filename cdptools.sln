@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cdptools", "cdptools\cdptools.vcxproj", "{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Debug|ARM.ActiveCfg = Debug|ARM
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Debug|ARM.Build.0 = Debug|ARM
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Debug|x64.ActiveCfg = Debug|x64
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Debug|x64.Build.0 = Debug|x64
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Debug|x86.ActiveCfg = Debug|x86
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Debug|x86.Build.0 = Debug|x86
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Release|ARM.ActiveCfg = Release|ARM
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Release|ARM.Build.0 = Release|ARM
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Release|x64.ActiveCfg = Release|x64
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Release|x64.Build.0 = Release|x64
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Release|x86.ActiveCfg = Release|x86
+		{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {99D12F08-D800-484D-9E83-F420723FA650}
+	EndGlobalSection
+EndGlobal
