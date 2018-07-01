@@ -61,11 +61,33 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="buffer_stream.c" />
+    <ClCompile Include="cdp.c" />
+    <ClCompile Include="cdp_packet_parser.c" />
+    <ClCompile Include="cisco_hello_protocol.c" />
+    <ClCompile Include="ip_address_array.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="power_over_ethernet_availability.c" />
+    <ClCompile Include="stream_reader.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="buffer_stream.h" />
+    <ClInclude Include="cdp.h" />
+    <ClInclude Include="cdp_packet_parser.h" />
+    <ClInclude Include="cisco_hello_protocol.h" />
+    <ClInclude Include="ip_address_array.h" />
+    <ClInclude Include="power_over_ethernet_availability.h" />
+    <ClInclude Include="stream_reader.h" />
+    <ClInclude Include="platform.h" />
+    <ClInclude Include="sample.h" />
   </ItemGroup>
-  <ItemDefinitionGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <ThreadSafeStatics>No</ThreadSafeStatics>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+    </ClCompile>
+    <Link />
+  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
 </Project>
