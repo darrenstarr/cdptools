@@ -422,7 +422,7 @@ int stream_reader_get_protocol_from_snap(struct stream_reader *reader, int *resu
 			return 0;
 	}
 
-	LOG_ERROR("stream_reader_get_protocol_from_snap: Unrecognized PID (0x4X)\n", pid);
+	LOG_ERROR("stream_reader_get_protocol_from_snap: Unrecognized PID (0x%4X)\n", pid);
 	return -1;
 }
 
