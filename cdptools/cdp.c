@@ -25,6 +25,7 @@ struct s_cdp_neighbor* cdp_neighbor_new(uint8_t version, uint8_t ttl, uint16_t c
 	result->cdp_proto_ver = version;
 	result->cdp_ttl = ttl;
 	result->cdp_checksum = checksum;
+	result->device_id = NULL;
 	result->software_version = NULL;
 	result->addresses = NULL;
 	result->capabilities = NULL;
@@ -38,6 +39,7 @@ struct s_cdp_neighbor* cdp_neighbor_new(uint8_t version, uint8_t ttl, uint16_t c
 	result->trust_bitmap = NULL;
 	result->untrusted_port_cos = NULL;
 	result->poe_availability = NULL;
+        result->vtp_management_domain = NULL;
 
 	result->next = NULL;
 	result->prev = NULL;
@@ -78,7 +80,7 @@ void cdp_neighbor_delete(struct s_cdp_neighbor *neighbor)
 		FREE_ARRAY(neighbor->port_id);
 
 	if (neighbor->management_addresses != NULL)
-		ip_address_array_clear_and_delete(neighbor->addresses);
+		ip_address_array_clear_and_delete(neighbor->management_addresses);
 
 	if (neighbor->native_vlan != NULL)
 		FREE(neighbor->native_vlan);
