@@ -51,7 +51,7 @@ int cdp_parse_packet(struct stream_reader*reader, struct s_cdp_neighbor **neighb
 
 		initialPosition = stream_reader_get_position(reader);
 
-		LOG_DEBUG("cdp_parse_packet: Reading TLV type (%d)\n", stream_reader_get_position(reader));
+		LOG_DEBUG("cdp_parse_packet: Reading TLV type (%zd)\n", stream_reader_get_position(reader));
 		if (stream_reader_get16(reader, &tlvType) < 0)
 		{
 			LOG_ERROR("cdp_parse_packet: Failed to read TLV type\n");
@@ -59,7 +59,7 @@ int cdp_parse_packet(struct stream_reader*reader, struct s_cdp_neighbor **neighb
 			return -1;
 		}
 
-		LOG_DEBUG("cdp_parse_packet: Reading TLV length (%d)\n", stream_reader_get_position(reader));
+		LOG_DEBUG("cdp_parse_packet: Reading TLV length (%zd)\n", stream_reader_get_position(reader));
 		if (stream_reader_get16(reader, &tlvLength) < 0)
 		{
 			LOG_ERROR("cdp_parse_packet: Failed to read TLV length\n");
@@ -405,7 +405,7 @@ int cdp_parse_packet(struct stream_reader*reader, struct s_cdp_neighbor **neighb
 
 			default:
 				LOG_INFORMATIONAL(
-					"cdp_parse_packet: Encountered unknown TLV (0x%04X) at position %d (0x%X) with length %d bytes\n",
+					"cdp_parse_packet: Encountered unknown TLV (0x%04X) at position %zd (0x%zX) with length %d bytes\n",
 					tlvType,
 					initialPosition,
 					initialPosition,
