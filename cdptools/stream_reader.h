@@ -113,6 +113,20 @@ int stream_reader_get_string(struct stream_reader *reader, char **result, size_t
   */
 int stream_reader_get_buffer(struct stream_reader *reader, uint8_t *result, size_t count);
 
+/** Reads an IPv4 address from the stream
+  * @param reader The reader object
+  * @param result The return value or NULL on error
+  * @return Either 0 on success or a negative value on error.
+  */
+int stream_reader_get_inet_address(struct stream_reader *reader, struct sockaddr **result);
+
+/** Reads an IPv6 address from the stream
+  * @param reader The reader object
+  * @param result The return value or NULL on error
+  * @return Either 0 on success or a negative value on error.
+  */
+int stream_reader_get_inet6_address(struct stream_reader *reader, struct sockaddr **result);
+
 /** Reads an IPv4 or IPv6 address from the stream.
   *  @reader: The reader object
   *  @result: A resulting IP address

@@ -27,9 +27,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{bb7fade0-bf87-4d83-a6b7-d62fdc154175}</ProjectGuid>
+    <ProjectGuid>{BB7FADE0-BF87-4D83-A6B7-D62FDC154175}</ProjectGuid>
     <Keyword>Linux</Keyword>
-    <RootNamespace>cdptools</RootNamespace>
+    <RootNamespace>modcdp</RootNamespace>
     <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <ApplicationType>Linux</ApplicationType>
     <ApplicationTypeRevision>1.0</ApplicationTypeRevision>
@@ -66,6 +66,8 @@
     <ClCompile Include="cdp_packet_parser.c" />
     <ClCompile Include="cisco_hello_protocol.c" />
     <ClCompile Include="ip_address_array.c" />
+    <ClCompile Include="ip_prefix.c" />
+    <ClCompile Include="ip_prefix_array.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="power_over_ethernet_availability.c" />
     <ClCompile Include="stream_reader.c" />
@@ -76,6 +78,8 @@
     <ClInclude Include="cdp_packet_parser.h" />
     <ClInclude Include="cisco_hello_protocol.h" />
     <ClInclude Include="ip_address_array.h" />
+    <ClInclude Include="ip_prefix.h" />
+    <ClInclude Include="ip_prefix_array.h" />
     <ClInclude Include="power_over_ethernet_availability.h" />
     <ClInclude Include="stream_reader.h" />
     <ClInclude Include="platform.h" />

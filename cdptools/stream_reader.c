@@ -359,6 +359,7 @@ int stream_reader_get_protocol_from_snap(struct stream_reader *reader, int *resu
 	uint8_t ssap;
 	uint8_t dsap;
 	uint8_t control;
+	uint32_t oui;
 	uint16_t pid;
 
 	if (result == NULL)
@@ -404,6 +405,18 @@ int stream_reader_get_protocol_from_snap(struct stream_reader *reader, int *resu
 	}
 
 	/* TODO: Consider validating control, it should be 0x3, but I don't know what 0x3 means. */
+
+	if (stream_reader_get24(reader, &oui) < 0)
+	{
+		LOG_ERROR("stream_reader_get_protocol_from_snap: Failed to read protocol vendor OUI from SNAP\n");
+		return -1;
+	}
+
+	if (oui != 0x000000)
+	{
+		LOG_ERROR("stream_reader_get_protocol_from_snap: Vendor OUI is not generic (00:00:00) as expected\n");
+		return -1;
+	}
 
 	if (stream_reader_get16(reader, &pid) < 0)
 	{
@@ -546,7 +559,7 @@ int stream_reader_get_inet6_address(struct stream_reader *reader, struct sockadd
 
 	ZERO_BUFFER(*result, struct sockaddr_in6);
 
-	(*result)->sa_family = AF_INET;
+	(*result)->sa_family = AF_INET6;
 	
 	/* TODO: Consider making a buffer copy function instead */
 	uint8_t *addressBuffer = ((struct sockaddr_in6 *)(*result))->sin6_addr.__in6_u.__u6_addr8;

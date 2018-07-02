@@ -124,7 +124,13 @@ int cdp_parse_packet(struct stream_reader*reader, struct s_cdp_neighbor **neighb
 							return -1;
 						}
 
-						cdp_neighbor_set_address(result, i, item);
+						if (cdp_neighbor_set_address(result, i, item) < 0)
+						{
+							LOG_ERROR("cdp_parse_packet: Failed to set address\n");
+							cdp_neighbor_delete(result);
+							FREE(item);
+							return -1;
+						}
 					}
 				}
 				break;
@@ -221,6 +227,71 @@ int cdp_parse_packet(struct stream_reader*reader, struct s_cdp_neighbor **neighb
 					}
 
 					FREE_ARRAY(platform);
+				}
+				break;
+
+			case CdpTlvODRPrefixes:
+				{
+					uint32_t prefixCount = (uint32_t)((tlvLength - 4) / 5);
+					uint32_t i;
+
+					if (cdp_neighbor_provision_odr_ip_prefix_array(result, prefixCount) < 0)
+					{
+						LOG_ERROR("cdp_parse_packet: Failed to allocate ODR IP prefix array\n");
+						cdp_neighbor_delete(result);
+						return -1;
+					}
+
+					for (i = 0; i < prefixCount; i++)
+					{
+						struct sockaddr *item = NULL;
+						uint8_t length;
+						struct ip_prefix *prefix = NULL;
+
+						if (stream_reader_get_inet_address(reader, &item) < 0)
+						{
+							LOG_ERROR("cdp_parse_packet: Failed to read ODR IP network address\n");
+							cdp_neighbor_delete(result);
+							return -1;
+						}
+
+						if (stream_reader_get8(reader, &length) < 0)
+						{
+							LOG_ERROR("cdp_parse_packet: Failed to ODR IP prefix length\n");
+							cdp_neighbor_delete(result);
+							FREE(item);
+							return -1;
+						}
+
+						prefix = ip_prefix_new();
+						if (prefix == NULL)
+						{
+							LOG_ERROR("cdp_parse_packet: Failed to allocate IP prefix\n");
+							cdp_neighbor_delete(result);
+							FREE(item);
+							return -1;
+						}
+
+						if (ip_prefix_set(prefix, item, length) < 0)
+						{
+							LOG_ERROR("cdp_parse_packet: Failed to allocate IP prefix\n");
+							cdp_neighbor_delete(result);
+							FREE(item);
+							ip_prefix_delete(prefix);
+
+							return -1;
+						}
+
+						if (cdp_neighbor_set_odr_ip_prefix(result, i, prefix) < 0)
+						{
+							LOG_ERROR("cdp_parse_packet: Failed to allocate IP prefix\n");
+							cdp_neighbor_delete(result);
+							FREE(item);
+							ip_prefix_delete(prefix);
+
+							return -1;
+						}
+					}
 				}
 				break;
 
@@ -378,7 +449,13 @@ int cdp_parse_packet(struct stream_reader*reader, struct s_cdp_neighbor **neighb
 							return -1;
 						}
 
-						cdp_neighbor_set_management_address(result, i, item);
+						if (cdp_neighbor_set_management_address(result, i, item) < 0)
+						{
+							LOG_ERROR("cdp_parse_packet: Failed to set address\n");
+							cdp_neighbor_delete(result);
+							FREE(item);
+							return -1;
+						}
 					}
 				}
 				break;

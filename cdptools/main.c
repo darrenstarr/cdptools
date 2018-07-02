@@ -44,10 +44,10 @@ int main()
 {
 	const uint8_t *bufferStart = packet_bytes + 0x16;
 	const uint8_t *bufferEnd = packet_bytes + sizeof(packet_bytes);
-	//Test(bufferStart, (size_t)(bufferEnd - bufferStart));
+	Test(bufferStart, (size_t)(bufferEnd - bufferStart));
 
 	Test(WiresharkCSR1000VIPv4, sizeof(WiresharkCSR1000VIPv4));
-	Test(WiresharkCSR1000VIPv4, sizeof(WiresharkCSR1000VIPv4));
+	Test(WiresharkCSR1000VIPv6, sizeof(WiresharkCSR1000VIPv6));
 
 	return 0;
 }

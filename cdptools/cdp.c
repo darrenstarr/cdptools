@@ -70,6 +70,9 @@ void cdp_neighbor_delete(struct s_cdp_neighbor *neighbor)
 	if (neighbor->platform != NULL)
 		FREE_ARRAY(neighbor->platform);
 
+	if (neighbor->odr_prefixes != NULL)
+		ip_prefix_array_clear_and_delete(neighbor->odr_prefixes);
+
 	if (neighbor->cluster_management_protocol != NULL)
 		cisco_hello_protocol_delete(neighbor->cluster_management_protocol);
 
@@ -196,7 +199,7 @@ int cdp_neighbor_set_address(struct s_cdp_neighbor *neighbor, off_t index, struc
 		return -1;
 	}
 
-	return ip_address_set_into(neighbor->addresses, index, address);
+	return ip_address_array_set_into(neighbor->addresses, index, address);
 }
 
 int cdp_neighbor_set_capabilities(struct s_cdp_neighbor *neighbor, uint32_t capabilities)
@@ -329,6 +332,72 @@ int cdp_neighbor_set_platform(struct s_cdp_neighbor *neighbor, const char *platf
 	}
 
 	return 0;
+}
+
+int cdp_neighbor_clear_odr_prefixes(struct s_cdp_neighbor *neighbor)
+{
+	if (neighbor == NULL)
+	{
+		LOG_CRITICAL("cdp_neighbor_clear_odr_prefixes: neighbor is null\n");
+		return -1;
+	}
+
+	if (neighbor->odr_prefixes != NULL)
+	{
+		if (ip_prefix_array_clear_and_delete(neighbor->odr_prefixes) < 0)
+		{
+			LOG_ERROR("cdp_neighbor_clear_odr_prefixes: Failed to dispose of old ODR IP prefixes\n");
+			return -1;
+		}
+
+		neighbor->odr_prefixes = NULL;
+	}
+
+	return 0;
+}
+
+int cdp_neighbor_provision_odr_ip_prefix_array(struct s_cdp_neighbor *neighbor, size_t count)
+{
+	if (neighbor == NULL)
+	{
+		LOG_CRITICAL("cdp_neighbor_provision_odr_ip_prefix_array: neighbor is null\n");
+		return -1;
+	}
+
+	if (neighbor->odr_prefixes != NULL)
+	{
+		if (cdp_neighbor_clear_odr_prefixes(neighbor) < 0)
+		{
+			LOG_ERROR("cdp_neighbor_provision_odr_ip_prefix_array: Failed to clear the array before allocating\n");
+			return -1;
+		}
+	}
+
+	neighbor->odr_prefixes = ip_prefix_array_new(count);
+	if (neighbor->odr_prefixes == NULL)
+	{
+		LOG_ERROR("cdp_neighbor_provision_odr_ip_prefix_array: Failed to provision storage for the CDP ODRP IP prefixes\n");
+		return -1;
+	}
+
+	return 0;
+}
+
+int cdp_neighbor_set_odr_ip_prefix(struct s_cdp_neighbor *neighbor, off_t index, struct ip_prefix *prefix)
+{
+	if (neighbor == NULL)
+	{
+		LOG_CRITICAL("cdp_neighbor_set_odr_ip_prefix: neighbor is null\n");
+		return -1;
+	}
+
+	if (neighbor->odr_prefixes == NULL)
+	{
+		LOG_CRITICAL("cdp_neighbor_set_odr_ip_prefix: neighbor ODR IP prefix array is null\n");
+		return -1;
+	}
+
+	return ip_prefix_array_set_into(neighbor->odr_prefixes, index, prefix);
 }
 
 int cdp_neighbor_set_cisco_cluster_management_protocol(struct s_cdp_neighbor *neighbor, struct cisco_hello_protocol *hello)
@@ -536,7 +605,7 @@ int cdp_neighbor_set_management_address(struct s_cdp_neighbor *neighbor, off_t i
 		return -1;
 	}
 
-	return ip_address_set_into(neighbor->management_addresses, index, address);
+	return ip_address_array_set_into(neighbor->management_addresses, index, address);
 }
 
 int cdp_neighbor_set_poe_availability(struct s_cdp_neighbor *neighbor, struct power_over_ethernet_availability *poe)
@@ -587,25 +656,25 @@ void printAddress(const struct sockaddr *address)
 
 void printCapabilities(uint32_t caps)
 {
-	if ((caps & CDP_CAPABILITY_L3R) == CDP_CAPABILITY_L3R)
+	if ((caps & CdpCapabilityRouting) == CdpCapabilityRouting)
 		_P("(Routing) ");
 
-	if ((caps & CDP_CAPABILITY_L2TB) == CDP_CAPABILITY_L2TB)
+	if ((caps & CdpCapabilityTransparentBridging) == CdpCapabilityTransparentBridging)
 		_P("(Transparent bridging) ");
 
-	if ((caps & CDP_CAPABILITY_L2SRB) == CDP_CAPABILITY_L2SRB)
+	if ((caps & CdpCapabilitySourceRouteBridging) == CdpCapabilitySourceRouteBridging)
 		_P("(Source-Route bridging) ");
 
-	if ((caps & CDP_CAPABILITY_L2SW) == CDP_CAPABILITY_L2SW)
+	if ((caps & CdpCapabilitySwitching) == CdpCapabilitySwitching)
 		_P("(Switching) ");
 
-	if ((caps & CDP_CAPABILITY_L3TXRX) == CDP_CAPABILITY_L3TXRX)
+	if ((caps & CdpCapabilityHost) == CdpCapabilityHost)
 		_P("(Host) ");
 
-	if ((caps & CDP_CAPABILITY_IGRP) == CDP_CAPABILITY_IGRP)
+	if ((caps & CdpCapabilityIGMP) == CdpCapabilityIGMP)
 		_P("(IGMP) ");
 
-	if ((caps & CDP_CAPABILITY_L1) == CDP_CAPABILITY_L1)
+	if ((caps & CdpCapabilityRepeater) == CdpCapabilityRepeater)
 		_P("(Repeater) ");
 
 	_P("\n");
@@ -741,4 +810,20 @@ void cdp_neighbor_dump(struct s_cdp_neighbor *neighbor)
 			neighbor->poe_availability->availableMilliwatts,
 			neighbor->poe_availability->powerManagementLevel
 		);
+
+	_P("ODR IP Prefixes: ");
+	if (neighbor->odr_prefixes == NULL)
+		_P("<null>\n");
+	else
+	{
+		for (i = 0; i < neighbor->odr_prefixes->count; i++)
+		{
+			const struct ip_prefix *prefix = neighbor->odr_prefixes->prefixes[i];
+
+			_P("\n    ");
+			printAddress(prefix->network);
+			_P("/%d", prefix->length);
+		}
+		_P("\n");
+	}
 }

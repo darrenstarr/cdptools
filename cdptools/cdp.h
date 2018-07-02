@@ -22,6 +22,7 @@ This software is released under the the GNU Public Licence (GPL).
 
 #include "cisco_hello_protocol.h"
 #include "ip_address_array.h"
+#include "ip_prefix_array.h"
 #include "power_over_ethernet_availability.h"
 
 /* timer values */
@@ -36,7 +37,7 @@ enum ECdpTlv
 	CdpTlvCapabilities = 4,
 	CdpTlvSoftwareVersion = 5,
 	CdpTlvPlatform = 6,
-	CdpTlvIPPrefix = 7,
+	CdpTlvODRPrefixes = 7,
 	CdpTlvProtocolHello = 8,
 	CdpTlvVtpManagementDomain = 9,
 	CdpTlvNativeVlan = 10,
@@ -55,13 +56,27 @@ typedef enum
 } ECdpNetworkDuplex;
 
 /* the capability masks */
-#define CDP_CAPABILITY_L3R	0x01	/* a layer 3 router */
-#define CDP_CAPABILITY_L2TB	0x02	/* a layer 2 transparent bridge */
-#define CDP_CAPABILITY_L2SRB	0x04	/* a layer 2 source-route bridge */
-#define CDP_CAPABILITY_L2SW	0x08	/* a layer 2 switch (non-spanning tree) */
-#define CDP_CAPABILITY_L3TXRX	0x10	/* a layer 3 (non routing) host */
-#define CDP_CAPABILITY_IGRP	0x20	/* does not forward IGMP Packets to non-routers */
-#define CDP_CAPABILITY_L1	0x40	/* a layer 1 repeater */
+
+/** Layer-3 routing */
+static const uint32_t CdpCapabilityRouting = 0x01;
+
+/** Layer-2 transparent bridging */
+static const uint32_t CdpCapabilityTransparentBridging = 0x02;
+
+/** Source-Route bridging */
+static const uint32_t CdpCapabilitySourceRouteBridging = 0x04;
+
+/** Layer-2 switching */
+static const uint32_t CdpCapabilitySwitching = 0x08;
+
+/** Host device */
+static const uint32_t CdpCapabilityHost = 0x10;
+
+/** IGMP multicast capable */
+static const uint32_t CdpCapabilityIGMP = 0x20;
+
+/** Layer-1 repeater */
+static const uint32_t CdpCapabilityRepeater = 0x40;
 
 /** A class for storing a CDP neighbor record */
 struct s_cdp_neighbor {
@@ -105,7 +120,7 @@ struct s_cdp_neighbor {
 	struct cisco_hello_protocol *cluster_management_protocol;
 
 	/** IP address prefix */
-	uint8_t *odr_prefixes;
+	struct ip_prefix_array *odr_prefixes;
 
 	/** VTP Management Domain */ // *
 	char *vtp_management_domain;
@@ -184,10 +199,10 @@ int cdp_neighbor_set_address(struct s_cdp_neighbor *neighbor, off_t index, struc
 int cdp_neighbor_set_capabilities(struct s_cdp_neighbor *neighbor, uint32_t capabilities);
 
 /** Sets the port ID string of the neighbor
-*  @neighbor The CDP neighbor object to alter.
-*  @portId The new port ID string to set.
-*  @return 0 on success, a negative number upon failure.
-*/
+  *  @neighbor The CDP neighbor object to alter.
+  *  @portId The new port ID string to set.
+  *  @return 0 on success, a negative number upon failure.
+  */
 int cdp_neighbor_set_port_id(struct s_cdp_neighbor *neighbor, const char *portId);
 
 /** Sets the software version string of the neighbor
@@ -203,6 +218,27 @@ int cdp_neighbor_set_software_version(struct s_cdp_neighbor *neighbor, const cha
   *  @return 0 on success, a negative number upon failure.
   */
 int cdp_neighbor_set_platform(struct s_cdp_neighbor *neighbor, const char *platform);
+
+/** Clears all the ODR prefixes from the neighbor
+*  @neighbor The CDP neighbor object
+*  @return: 0 on success, a negative number on failure.
+*/
+int cdp_neighbor_clear_odr_prefixes(struct s_cdp_neighbor *neighbor);
+
+/** Clears and allocates a new ODR prefix array
+*  @neighbor: The CDP neighbor object
+*  @count: The number of ODR IP prefixes to create an array for.
+*  @return: 0 on success, a negative number on failure.
+*/
+int cdp_neighbor_provision_odr_ip_prefix_array(struct s_cdp_neighbor *neighbor, size_t count);
+
+/** Sets an ODR IP prefix on the neighbor
+*  @neighbor: The CDP neighbor object.
+*  @index: The index to set.
+*  @prefix: The ODR IP prefix to set.
+*  @return: 0 on success, a negative value on failure
+*/
+int cdp_neighbor_set_odr_ip_prefix(struct s_cdp_neighbor *neighbor, off_t index, struct ip_prefix *prefix);
 
 /** Sets the Cisco cluster management protocol information and takes possession of the pointer.
   *  @neighbor: The CDP neighbor object.
@@ -233,17 +269,17 @@ int cdp_neighbor_set_native_vlan(struct s_cdp_neighbor *neighbor, uint16_t nativ
 int cdp_neighbor_set_duplex(struct s_cdp_neighbor *neighbor, ECdpNetworkDuplex duplex);
 
 /** No idea what this is
-*  @neighbor: The CDP neighbor object.
-*  @trustBitmap: The trust bitmap
-*  @return: 0 on success, a negative number on failure.
-*/
+  *  @neighbor: The CDP neighbor object.
+  *  @trustBitmap: The trust bitmap
+  *  @return: 0 on success, a negative number on failure.
+  */
 int cdp_neighbor_set_trust_bitmap(struct s_cdp_neighbor *neighbor, uint8_t trustBitmap);
 
 /** Set the COS available on the port when it's not trusted.
-*  @neighbor: The CDP neighbor object.
-*  @untrustedPortCoS
-*  @return: 0 on success, a negative number on failure.
-*/
+  *  @neighbor: The CDP neighbor object.
+  *  @untrustedPortCoS
+  *  @return: 0 on success, a negative number on failure.
+  */
 int cdp_neighbor_set_untrusted_port_cos(struct s_cdp_neighbor *neighbor, uint8_t untrustedPortCoS);
 
 /** Clears all the management addresses from the neighbor

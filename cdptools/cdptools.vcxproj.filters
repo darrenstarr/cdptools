@@ -25,6 +25,12 @@
     <ClCompile Include="cdp_packet_parser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ip_prefix.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ip_prefix_array.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header Files">
@@ -60,6 +66,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cdp_packet_parser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ip_prefix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ip_prefix_array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

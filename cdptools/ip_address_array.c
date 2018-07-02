@@ -98,7 +98,7 @@ int ip_address_array_clear_and_delete(struct ip_address_array *array)
 	return 0;
 }
 
-int ip_address_set_into(struct ip_address_array *array, off_t index, struct sockaddr *address)
+int ip_address_array_set_into(struct ip_address_array *array, off_t index, struct sockaddr *address)
 {
 	if (array == NULL)
 	{
