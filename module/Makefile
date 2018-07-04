@@ -11,7 +11,7 @@ cdp-objs := \
 	../libcdp/buffer_stream.o \
 	../libcdp/cdp_packet.o \
 	../libcdp/cdp_packet_parser.o \
-	../libcdp/cisco_hello_protocol.o \
+	../libcdp/cisco_cluster_management_protocol.o \
 	../libcdp/ip_address_array.o \
 	../libcdp/ip_prefix_array.o \
 	../libcdp/ip_prefix.o \

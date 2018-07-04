@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 #include "buffer_stream.h"
-#include "cisco_hello_protocol.h"
+#include "cisco_cluster_management_protocol.h"
 #include "platform_socket.h"
 
 /** struct stream_reader: An abstraction of a buffer for parsing data as a stream
@@ -142,6 +142,6 @@ int stream_reader_get_address(struct stream_reader *reader, struct sockaddr **re
   *  @result: The resulting cluster management protocol information or NULL on error.
   *  @return: 0 on success or a negative value on error.
   */
-int stream_reader_get_cisco_cluster_management_protocol(struct stream_reader *reader, struct cisco_hello_protocol **result);
+int stream_reader_get_cisco_cluster_management_protocol(struct stream_reader *reader, struct cisco_cluster_management_protocol **result);
 
 #endif

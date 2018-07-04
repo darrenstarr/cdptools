@@ -4,7 +4,7 @@
 #include "platform_socket.h"
 #include "platform_types.h"
 
-#include "cisco_hello_protocol.h"
+#include "cisco_cluster_management_protocol.h"
 #include "ecdpnetworkduplex.h"
 #include "ecdptlv.h"
 #include "ip_address_array.h"
@@ -64,7 +64,7 @@ struct cdp_packet {
 	char *platform;
 
 	/** Cluster management protocol */
-	struct cisco_hello_protocol *cluster_management_protocol;
+	struct cisco_cluster_management_protocol *cluster_management_protocol;
 
 	/** IP address prefix */
 	struct ip_prefix_array *odr_prefixes;
@@ -186,10 +186,10 @@ int cdp_packet_set_odr_ip_prefix(struct cdp_packet *neighbor, off_t index, struc
 
 /** Sets the Cisco cluster management protocol information and takes possession of the pointer.
   *  @neighbor: The CDP neighbor object.
-  *  @hello: The cluster management protocol hello message
+  *  @clusterProtocol: The cluster management protocol message
   *  @return: 0 on success, a negative value on failure.
   */
-int cdp_packet_set_cisco_cluster_management_protocol(struct cdp_packet *neighbor, struct cisco_hello_protocol *hello);
+int cdp_packet_set_cisco_cluster_management_protocol(struct cdp_packet *neighbor, struct cisco_cluster_management_protocol *clusterProtocol);
 
 /** Sets the VTP management domain
  *  @neighbor The CDP neighbor object to alter.

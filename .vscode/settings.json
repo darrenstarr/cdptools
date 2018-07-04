@@ -5,7 +5,7 @@
         "cdp_proc.h": "c",
         "buffer_stream.h": "c",
         "platformtypes.h": "c",
-        "cisco_hello_protocol.h": "c",
+        "cisco_cluster_management_protocol.h": "c",
         "power_over_ethernet_availability.h": "c"
     }
 }

@@ -62,7 +62,7 @@ void cdp_packet_delete(struct cdp_packet *neighbor)
 		ip_prefix_array_clear_and_delete(neighbor->odr_prefixes);
 
 	if (neighbor->cluster_management_protocol != NULL)
-		cisco_hello_protocol_delete(neighbor->cluster_management_protocol);
+		cisco_cluster_management_protocol_delete(neighbor->cluster_management_protocol);
 
 	if (neighbor->vtp_management_domain != NULL)
 		FREE_ARRAY(neighbor->vtp_management_domain);
@@ -391,7 +391,7 @@ int cdp_packet_set_odr_ip_prefix(struct cdp_packet *neighbor, off_t index, struc
 	return ip_prefix_array_set_into(neighbor->odr_prefixes, index, prefix);
 }
 
-int cdp_packet_set_cisco_cluster_management_protocol(struct cdp_packet *neighbor, struct cisco_hello_protocol *hello)
+int cdp_packet_set_cisco_cluster_management_protocol(struct cdp_packet *neighbor, struct cisco_cluster_management_protocol *clusterProtocol)
 {
 	if (neighbor == NULL)
 	{
@@ -400,9 +400,9 @@ int cdp_packet_set_cisco_cluster_management_protocol(struct cdp_packet *neighbor
 	}
 
 	if (neighbor->cluster_management_protocol != NULL)
-		cisco_hello_protocol_delete(neighbor->cluster_management_protocol);
+		cisco_cluster_management_protocol_delete(neighbor->cluster_management_protocol);
 
-	neighbor->cluster_management_protocol = hello;
+	neighbor->cluster_management_protocol = clusterProtocol;
 	return 0;
 }
 
@@ -816,7 +816,7 @@ void cdp_packet_dump(struct cdp_packet *neighbor)
 		_P("\n");
 	}
 
-	_P("Protocol Hello: ");
+	_P("Cluster Management Protocol: ");
 	if (neighbor->cluster_management_protocol == NULL)
 		_P("<null>\n");
 	else

@@ -10,7 +10,7 @@ enum ECdpTlv
 	CdpTlvSoftwareVersion = 5,
 	CdpTlvPlatform = 6,
 	CdpTlvODRPrefixes = 7,
-	CdpTlvProtocolHello = 8,
+	CdpTlvClusterManagementProtocol = 8,
 	CdpTlvVtpManagementDomain = 9,
 	CdpTlvNativeVlan = 10,
 	CdpTlvDuplex = 11,

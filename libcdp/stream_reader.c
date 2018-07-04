@@ -628,122 +628,122 @@ int stream_reader_get_address(struct stream_reader *reader, struct sockaddr **re
 }
 
 /* TODO: Move this to the file. It doesn't feel right here. */
-int stream_reader_get_cisco_cluster_management_protocol(struct stream_reader *reader, struct cisco_hello_protocol **result)
+int stream_reader_get_cisco_cluster_management_protocol(struct stream_reader *reader, struct cisco_cluster_management_protocol **result)
 {
-	struct cisco_hello_protocol *hello;
+	struct cisco_cluster_management_protocol *clusterProtocol;
 
-	hello = cisco_hello_protocol_new();
-	if (hello == NULL)
+	clusterProtocol = cisco_cluster_management_protocol_new();
+	if (clusterProtocol == NULL)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: Failed to allocate a buffer for the cisco cluster management protocol\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	if (stream_reader_get24(reader, &hello->oui) < 0)
+	if (stream_reader_get24(reader, &clusterProtocol->oui) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: Failed to read the OUI for the Cisco cluster management protocol\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	if (hello->oui != 0x00000C)
+	if (clusterProtocol->oui != 0x00000C)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: The OUI specified for the cluster management protocol is not 00:00:0C\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	if (stream_reader_get16(reader, &hello->protocol_id) < 0)
+	if (stream_reader_get16(reader, &clusterProtocol->protocol_id) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: Failed to read cluster management protocol ID\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
 	/*
-	if (hello->protocol_id != 0x0112)
+	if (clusterProtocol->protocol_id != 0x0112)
 	{
 	}
 	*/
 
-	if (stream_reader_get_inet_address(reader, (struct sockaddr **)&(hello->cluster_master_ip)) < 0)
+	if (stream_reader_get_inet_address(reader, (struct sockaddr **)&(clusterProtocol->cluster_master_ip)) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to read cluster master IP\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	if (stream_reader_get_inet_address(reader, (struct sockaddr **)&(hello->netmask)) < 0)
+	if (stream_reader_get_inet_address(reader, (struct sockaddr **)&(clusterProtocol->netmask)) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to read cluster netmask\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	if (stream_reader_get16(reader, &hello->version) < 0)
+	if (stream_reader_get16(reader, &clusterProtocol->version) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to read cluster management protocol version\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
 	/*
-	if (hello->version != 0x0102)
+	if (clusterProtocol->version != 0x0102)
 	{
 	}
 	*/
 
-	if (stream_reader_get8(reader, &hello->status) < 0)
+	if (stream_reader_get8(reader, &clusterProtocol->status) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to read cluster management protocol status\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
 	if (stream_reader_skip(reader, 1) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to advance position\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	if (stream_reader_get_buffer(reader, hello->cluster_commander_mac, 6) < 0)
+	if (stream_reader_get_buffer(reader, clusterProtocol->cluster_commander_mac, 6) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to read the cluster commander MAC\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	if (stream_reader_get_buffer(reader, hello->local_mac, 6) < 0)
+	if (stream_reader_get_buffer(reader, clusterProtocol->local_mac, 6) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to read the local switch MAC\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}	
 
 	if (stream_reader_skip(reader, 1) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to advance position\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
 	if (stream_reader_skip(reader, 1) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to advance position\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	if (stream_reader_get16(reader, &hello->management_vlan) < 0)
+	if (stream_reader_get16(reader, &clusterProtocol->management_vlan) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to read cluster management vlan\n");
-		cisco_hello_protocol_delete(hello);
+		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	*result = hello;
+	*result = clusterProtocol;
 
 	return 0;
 }

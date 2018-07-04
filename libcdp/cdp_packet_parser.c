@@ -2,7 +2,7 @@
 
 #include "cdp_packet.h"
 #include "cdp_packet_parser.h"
-#include "cisco_hello_protocol.h"
+#include "cisco_cluster_management_protocol.h"
 #include "ip_address_array.h"
 #include "platform.h"
 #include "power_over_ethernet_availability.h"
@@ -295,20 +295,20 @@ int cdp_parse_packet(struct stream_reader*reader, struct cdp_packet **neighbor)
 				}
 				break;
 
-			case CdpTlvProtocolHello:
+			case CdpTlvClusterManagementProtocol:
 				{
-					struct cisco_hello_protocol *hello;
+					struct cisco_cluster_management_protocol *clusterProtocol;
 
-					if (stream_reader_get_cisco_cluster_management_protocol(reader, &hello) < 0)
+					if (stream_reader_get_cisco_cluster_management_protocol(reader, &clusterProtocol) < 0)
 					{
 						LOG_ERROR("cdp_parse_packet: Failed to read cisco cluster management protocol tlv\n");
 						return -1;
 					}
 
-					if (cdp_packet_set_cisco_cluster_management_protocol(result, hello) < 0)
+					if (cdp_packet_set_cisco_cluster_management_protocol(result, clusterProtocol) < 0)
 					{
 						LOG_ERROR("cdp_parse_packet: Failed to set the cisco cluster management protocol\n");
-						cisco_hello_protocol_delete(hello);
+						cisco_cluster_management_protocol_delete(clusterProtocol);
 						return -1;
 					}
 				}

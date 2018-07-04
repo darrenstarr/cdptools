@@ -1,14 +1,14 @@
-#ifndef CISCO_HELLO_PROTOCOL_H
-#define CISCO_HELLO_PROTOCOL_H
+#ifndef cisco_cluster_management_protocol_H
+#define cisco_cluster_management_protocol_H
 
 #include "platform_types.h"
 #include "platform_socket.h"
 
-/** A container for data from the Cisco Hello Protocol in CDP for cluster management
+/** A container for data from the Cisco Cluster Management Protocol in CDP for cluster management
   */
-struct cisco_hello_protocol
+struct cisco_cluster_management_protocol
 {
-	/** The organizationally unique identifier for the hello */
+	/** The organizationally unique identifier for the protocol */
 	uint32_t oui;
 
 	/** The protocol ID, should be 0x112 */
@@ -39,11 +39,11 @@ struct cisco_hello_protocol
 /** Constructor
   *  @return the new structure or NULL on error
   */
-struct cisco_hello_protocol *cisco_hello_protocol_new(void);
+struct cisco_cluster_management_protocol *cisco_cluster_management_protocol_new(void);
 
 /** Deconstructor
-  *  @hello: The cisco hello protocol object
+  *  @clusterManagementProtocol: The cisco cluster management protocol object
   */
-void cisco_hello_protocol_delete(struct cisco_hello_protocol *hello);
+void cisco_cluster_management_protocol_delete(struct cisco_cluster_management_protocol *clusterManagementProtocol);
 
 #endif

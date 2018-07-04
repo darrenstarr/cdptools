@@ -6,21 +6,26 @@
 #include "../libcdp/cdp_packet.h"
 #include "../libcdp/cdp_packet_parser.h"
 
-static int json_escape(struct seq_file *m, const char *s)
+/** Print to a sequential file an escaped json string. Based on seq_escape
+  *  @param seq the sequential file to stream to
+  *  @param source the source string to escape and output
+  *  @return 0 or a negative value on error.
+  */
+static int json_escape(struct seq_file *seq, const char *source)
 {
-	char *end = m->buf + m->size;
-    char *p;
+	char *end = seq->buf + seq->size;
+    char *out;
 	char c;
 
-    for (p = m->buf + m->count; (c = *s) != '\0' && p < end; s++)
+    for (out = seq->buf + seq->count; (c = *source) != '\0' && out < end; source++)
     {
         switch(c)
         {
             case '\n':
-                if (p + 2 < end)
+                if (out + 2 < end)
                 {
-                    *p++ = '\\';
-                    *p++ = 'n';
+                    *out++ = '\\';
+                    *out++ = 'n';
                     continue;
                 }
                 break;
@@ -29,36 +34,43 @@ static int json_escape(struct seq_file *m, const char *s)
                 continue;
 
             case '\t':
-                if (p + 2 < end)
+                if (out + 2 < end)
                 {
-                    *p++ = '\\';
-                    *p++ = 't';
+                    *out++ = '\\';
+                    *out++ = 't';
                     continue;
                 }
                 break;
 
             case '"':
-                if (p + 2 < end)
+                if (out + 2 < end)
                 {
-                    *p++ = '\\';
-                    *p++ = c;
+                    *out++ = '\\';
+                    *out++ = c;
                     continue;
                 }
                 break;
 
             default:
-                *p++ = c;
+                *out++ = c;
                 continue;
         }
 
-		m->count = m->size; // Set overflow
+		seq->count = seq->size; // Set overflow
 		return -1;
     }
 	
-    m->count = p - m->buf;
+    seq->count = out - seq->buf;
+
     return 0;
 }
 
+/** Output a JSON string value to a sequential file stream
+  *  @param seq the sequential file stream
+  *  @param value the value to output
+  *  @param name the JSON variable name
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_string_out(struct seq_file *seq, const char *value, const char *name)
 {
     seq_puts(seq, "    \"");
@@ -78,6 +90,12 @@ static int json_string_out(struct seq_file *seq, const char *value, const char *
     return 0;
 }
 
+/** Output a JSON integer value to a sequential file stream
+  *  @param seq the sequential file stream
+  *  @param value the value to output
+  *  @param name the JSON variable name
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_int_out(struct seq_file *seq, int value, const char *name)
 {
     seq_puts(seq, "    ");
@@ -86,19 +104,13 @@ static int json_int_out(struct seq_file *seq, int value, const char *name)
     return 0;
 }
 
-// static int json_u8p_out(struct seq_file *seq, const uint8_t *value, const char *name, bool force)
-// {
-//     if(value == NULL)
-//     {
-//         if(force)
-//             seq_printf(seq, "    \"%s\": null,\n", name);
-//     }
-//     else
-//         seq_printf(seq, "    \"%s\": %d,\n", name, *value);
-
-//     return 0;
-// }
-
+/** Output an optional JSON integer value to a sequential file stream.
+  *  @param seq the sequential file stream.
+  *  @param value the value to output.
+  *  @param name the JSON variable name.
+  *  @param force true if the variable should be present as null even if the value is null.
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_u8px_out(struct seq_file *seq, const uint8_t *value, const char *name, bool force)
 {
     if(value == NULL)
@@ -112,6 +124,13 @@ static int json_u8px_out(struct seq_file *seq, const uint8_t *value, const char 
     return 0;
 }
 
+/** Output an optional JSON integer value to a sequential file stream.
+  *  @param seq the sequential file stream.
+  *  @param value the value to output.
+  *  @param name the JSON variable name.
+  *  @param force true if the variable should be present as null even if the value is null.
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_u16p_out(struct seq_file *seq, const uint16_t *value, const char *name, bool force)
 {
     if(value == NULL)
@@ -125,6 +144,12 @@ static int json_u16p_out(struct seq_file *seq, const uint16_t *value, const char
     return 0;
 }
 
+/** Output an network duplex string value to a sequential file stream.
+  *  @param seq the sequential file stream.
+  *  @param value the value to output.
+  *  @param name the JSON variable name.
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_duplex_out(struct seq_file *seq, ECdpNetworkDuplex value, const char *name)
 {
     switch(value)
@@ -143,6 +168,14 @@ static int json_duplex_out(struct seq_file *seq, ECdpNetworkDuplex value, const 
     return 0;
 }
 
+/** Output an optional array of addresses as JSON to a sequential file stream.
+  *  @param seq the sequential file stream.
+  *  @param array the array to output
+  *  @param name the JSON variable name.
+  *  @param force true if the variable should be present as null even if the value is null.
+  *  @param last true if this is the last item in the list and should not have a trailing comma
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_address_array_out(struct seq_file *seq, const struct ip_address_array *array, const char *name, bool force, bool last)
 {
     if(array == NULL)
@@ -181,6 +214,14 @@ static int json_address_array_out(struct seq_file *seq, const struct ip_address_
     return 0;
 }
 
+/** Output an optional array of IP prefixes as JSON to a sequential file stream.
+  *  @param seq the sequential file stream.
+  *  @param array the array to output
+  *  @param name the JSON variable name.
+  *  @param force true if the variable should be present as null even if the value is null.
+  *  @param last true if this is the last item in the list and should not have a trailing comma
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_prefix_array_out(struct seq_file *seq, const struct ip_prefix_array *array, const char *name, bool force, bool last)
 {
     if(array == NULL)
@@ -220,6 +261,14 @@ static int json_prefix_array_out(struct seq_file *seq, const struct ip_prefix_ar
     return 0;
 }
 
+/** Output a boolean value based on a bit mask as JSON to a sequential file stream
+  *  @param seq the sequential file stream.
+  *  @param value the value to test against
+  *  @param mask the bit mask to test the bits of
+  *  @param name the JSON variable name.
+  *  @param last true if this is the last item in the list and should not have a trailing comma
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_cdp_capability_out(struct seq_file *seq, uint32_t value, uint32_t mask, const char *name, bool last)
 {
     seq_puts(seq, "      \"");
@@ -238,6 +287,12 @@ static int json_cdp_capability_out(struct seq_file *seq, uint32_t value, uint32_
     return 0;
 }
 
+/** Output CDP capability values as individual JSON booleans to a sequential file stream.
+  *  @param seq the sequential file stream.
+  *  @param value the capabilities value to output.
+  *  @param name the JSON variable name.
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_cdp_capabilities_out(struct seq_file *seq, const uint32_t *value, const char *name)
 {
     if(value == NULL)
@@ -258,6 +313,13 @@ static int json_cdp_capabilities_out(struct seq_file *seq, const uint32_t *value
     return 0;
 }
 
+/** Output the CDP Power Over Ethernet availability structure in JSON format to a sequential file stream
+  *  @param seq the sequential file stream.
+  *  @param value the value to output.
+  *  @param name the JSON variable name.
+  *  @param force true if the variable should be present as null even if the value is null.
+  *  @return 0 on success or a negative value on error.
+  */
 static int json_cdp_poe_availability_out(struct seq_file *seq, const struct power_over_ethernet_availability *value, const char *name, bool force)
 {
     if(value == NULL)
@@ -278,7 +340,14 @@ static int json_cdp_poe_availability_out(struct seq_file *seq, const struct powe
     return 0;
 }
 
-static int json_cdp_cluster_management_protocol_out(struct seq_file *seq, const struct cisco_hello_protocol *value, const char *name, bool force)
+/** Output the CDP Cisco cluster management protocol structure in JSON format to a sequential file stream
+  *  @param seq the sequential file stream.
+  *  @param value the value to output.
+  *  @param name the JSON variable name.
+  *  @param force true if the variable should be present as null even if the value is null.
+  *  @return 0 on success or a negative value on error.
+  */
+static int json_cdp_cluster_management_protocol_out(struct seq_file *seq, const struct cisco_cluster_management_protocol *value, const char *name, bool force)
 {
     if(value == NULL)
     {
