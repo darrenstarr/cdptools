@@ -119,7 +119,7 @@ static int json_u8px_out(struct seq_file *seq, const uint8_t *value, const char 
             seq_printf(seq, "    \"%s\": null,\n", name);
     }
     else
-        seq_printf(seq, "    \"%s\": %02x,\n", name, *value);
+        seq_printf(seq, "    \"%s\": 0x%02x,\n", name, *value);
 
     return 0;
 }
