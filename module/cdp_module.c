@@ -2,6 +2,7 @@
 #include <linux/module.h>           // Core header for loading LKMs into the kernel
 #include <linux/kernel.h>           // Contains types, macros, functions for the kernel
 #include <linux/timer.h>
+#include <linux/netdevice.h>
 
 #include "cdp_module.h"
 #include "cdp_neighbor.h"
@@ -49,6 +50,29 @@ void cdp_timer_event_handler( struct timer_list *data )
     }
 }
 
+static int __init register_cdp_multicast(void)
+{
+    struct net_device *dev;
+    static const uint8_t cdpMulticastAddress[] = { 0x01, 0x00, 0x0C, 0x0C, 0x0C, 0x0C };
+
+    read_lock(&dev_base_lock);
+
+    dev = first_net_device(&init_net);
+    while (dev) {
+        if(dev->type == ARPHRD_ETHER)
+            printk(KERN_INFO "found [%s]\n", dev->name);
+
+        dev_mc_add_global(dev, cdpMulticastAddress);
+
+        dev = next_net_device(dev);
+    }
+
+    read_unlock(&dev_base_lock);
+
+    return 0;
+}
+
+
 /** @brief The LKM initialization function
  *  The static keyword restricts the visibility of the function to within this C file. The __init
  *  macro means that for a built-in driver (not a LKM) the function is only used at initialization
@@ -92,6 +116,8 @@ static int __init cdp_module_init(void){
         cdp_neighbor_list_clean_and_delete(cdp_neighbors);
         return -ENOMEM;
 	}
+
+    register_cdp_multicast();
 
     return rc;
 }
