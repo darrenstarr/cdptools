@@ -1,7 +1,7 @@
 #ifndef BUFFER_STREAM_H
 #define BUFFER_STREAM_H
 
-#include <linux/types.h>
+#include "platform_types.h"
 
 /**
 * struct s_buffer_stream - A simple buffer class that should not be accessed except through operators

@@ -2,9 +2,9 @@
 #define STREAM_READER_H
 
 #include <stdbool.h>
-#include <linux/socket.h>
 #include "buffer_stream.h"
 #include "cisco_hello_protocol.h"
+#include "platform_socket.h"
 
 /** struct stream_reader: An abstraction of a buffer for parsing data as a stream
   * @stream: The pointer to the buffer to parse

@@ -5,8 +5,8 @@
 #include "cdp_module.h"
 #include "cdp_proc.h"
 
-#include "libcdp/cdp_packet.h"
-#include "libcdp/cdp_packet_parser.h"
+#include "../libcdp/cdp_packet.h"
+#include "../libcdp/cdp_packet_parser.h"
 
 /** Prints the contents of a socket address if the format is known and understood
   *  @param seq the sequential file handle to print to

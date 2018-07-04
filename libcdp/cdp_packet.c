@@ -1,6 +1,3 @@
-#include <linux/in.h>
-#include <linux/in6.h>
-
 #include "cdp_packet.h"
 #include "platform.h"
 
@@ -635,7 +632,7 @@ void printAddress(const struct sockaddr *address)
 			if (i > 0)
 				_P(":");
 
-			_P("%02X%02X", address6->sin6_addr.in6_u.u6_addr8[i], address6->sin6_addr.in6_u.u6_addr8[i + 1]);
+			_P("%02X%02X", IPv6Octet(address6, i), IPv6Octet(address6, i + 1));
 		}
 	}
 	else

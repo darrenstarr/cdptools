@@ -1,10 +1,7 @@
 #include "buffer_stream.h"
 #include "platform.h"
+#include "platform_socket.h"
 #include "stream_reader.h"
-
-#include <linux/socket.h>
-#include <linux/in.h>
-#include <linux/in6.h>
 
 struct stream_reader *stream_reader_new(const uint8_t *data, size_t length)
 {
@@ -565,7 +562,7 @@ int stream_reader_get_inet6_address(struct stream_reader *reader, struct sockadd
 	(*result)->sa_family = AF_INET6;
 	
 	/* TODO: Consider making a buffer copy function instead */
-	addressBuffer = ((struct sockaddr_in6 *)(*result))->sin6_addr.in6_u.u6_addr8;
+	addressBuffer = IPv6Octets((struct sockaddr_in6 *)(*result));
 	for (i = 0; i < 16; i++)
 	{
 		if (stream_reader_get8(reader, addressBuffer + i) < 0)

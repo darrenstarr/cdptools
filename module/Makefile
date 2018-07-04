@@ -17,6 +17,9 @@ cdp-objs := \
 	../libcdp/stream_reader.o
 
 all:
+    KCPPFLAGS="-DCDP_KMODULE=1" make -C /lib/modules/$(shell uname -r)/build M=$(PWD) 
+
+all:
 	make -C /lib/modules/$(shell uname -r)/build/ M=$(PWD) modules
 
 clean:

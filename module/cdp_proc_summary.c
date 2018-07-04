@@ -3,8 +3,8 @@
 #include "cdp_proc.h"
 #include "cdp_module.h"
 
-#include "libcdp/cdp_packet.h"
-#include "libcdp/cdp_packet_parser.h"
+#include "../libcdp/cdp_packet.h"
+#include "../libcdp/cdp_packet_parser.h"
 
 static const char *format_capabilities_brief(const uint32_t *capabilities, char *resultBuffer)
 {

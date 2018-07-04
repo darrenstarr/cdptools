@@ -108,6 +108,7 @@ bool cdp_neighbor_remote_mac_equals(const struct cdp_neighbor *neighbor, const u
   *  @param neighbor The neighbor object
   *  @return the hold time or a negative value on error.
   */
+int cdp_neighbor_get_hold_time(const struct cdp_neighbor *neighbor);
 
 /** Checks whether the neighbor's record is expired
   *  @param neighbor The neighbor object.

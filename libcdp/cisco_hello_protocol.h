@@ -1,9 +1,8 @@
 #ifndef CISCO_HELLO_PROTOCOL_H
 #define CISCO_HELLO_PROTOCOL_H
 
-#include <linux/types.h>
-#include <linux/socket.h>
-#include <linux/in.h>
+#include "platform_types.h"
+#include "platform_socket.h"
 
 /** A container for data from the Cisco Hello Protocol in CDP for cluster management
   */

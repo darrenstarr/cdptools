@@ -2,6 +2,9 @@
     "files.associations": {
         "cdp_neighbor.h": "c",
         "cdp_packet.h": "c",
-        "cdp_proc.h": "c"
+        "cdp_proc.h": "c",
+        "buffer_stream.h": "c",
+        "platformtypes.h": "c",
+        "cisco_hello_protocol.h": "c"
     }
 }

@@ -1,7 +1,7 @@
 #ifndef IP_ADDRESS_H
 #define IP_ADDRESS_H
 
-#include <linux/socket.h>
+#include "platform_socket.h"
 
 /** @summary Container for an array of IP addresses */
 struct ip_address_array

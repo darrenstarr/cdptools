@@ -1,7 +1,7 @@
 #ifndef IP_PREFIX_H
 #define IP_PREFIX_H
 
-#include <linux/socket.h>
+#include "platform_socket.h"
 
 /** @summary A representation of a network prefix */
 struct ip_prefix

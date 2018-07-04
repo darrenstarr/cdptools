@@ -1,11 +1,8 @@
 #ifndef	_NET_CDP_H
 #define	_NET_CDP_H
 
-#include <linux/types.h>
-// #include <stdint.h>
-// #include <sys/socket.h>
-// #include <sys/time.h>
-// #include <sys/types.h>
+#include "platform_socket.h"
+#include "platform_types.h"
 
 #include "cisco_hello_protocol.h"
 #include "ecdpnetworkduplex.h"
