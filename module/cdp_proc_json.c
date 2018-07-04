@@ -333,7 +333,7 @@ static int json_cdp_poe_availability_out(struct seq_file *seq, const struct powe
         seq_printf(seq, "      \"requestId\": %d,\n", value->request_id);
         seq_printf(seq, "      \"managementId\": %d,\n", value->management_id);
         seq_printf(seq, "      \"availableMilliwatts\": %u,\n", value->availableMilliwatts);
-        seq_printf(seq, "      \"powerManagementLevel\": %d,\n", value->powerManagementLevel);
+        seq_printf(seq, "      \"powerManagementLevel\": %d\n", value->powerManagementLevel);
         seq_printf(seq, "    },\n");
     }
 
@@ -375,7 +375,7 @@ static int json_cdp_cluster_management_protocol_out(struct seq_file *seq, const 
             value->cluster_commander_mac[4],
             value->cluster_commander_mac[5]
         );
-        seq_printf(seq, "      \"managementVlan\": %d,\n", value->management_vlan);
+        seq_printf(seq, "      \"managementVlan\": %d\n", value->management_vlan);
         seq_printf(seq, "    },\n");
     }
 

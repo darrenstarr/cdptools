@@ -631,6 +631,7 @@ int stream_reader_get_address(struct stream_reader *reader, struct sockaddr **re
 int stream_reader_get_cisco_cluster_management_protocol(struct stream_reader *reader, struct cisco_cluster_management_protocol **result)
 {
 	struct cisco_cluster_management_protocol *clusterProtocol;
+	struct sockaddr *ip_placeholder;
 
 	clusterProtocol = cisco_cluster_management_protocol_new();
 	if (clusterProtocol == NULL)
@@ -666,15 +667,16 @@ int stream_reader_get_cisco_cluster_management_protocol(struct stream_reader *re
 	{
 	}
 	*/
-
-	if (stream_reader_get_inet_address(reader, (struct sockaddr **)&(clusterProtocol->cluster_master_ip)) < 0)
+	ip_placeholder = (struct sockaddr *)&(clusterProtocol->cluster_master_ip);
+	if (stream_reader_get_inet_address(reader, &ip_placeholder) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to read cluster master IP\n");
 		cisco_cluster_management_protocol_delete(clusterProtocol);
 		return -1;
 	}
 
-	if (stream_reader_get_inet_address(reader, (struct sockaddr **)&(clusterProtocol->netmask)) < 0)
+	ip_placeholder = (struct sockaddr *)&(clusterProtocol->netmask);
+	if (stream_reader_get_inet_address(reader, &ip_placeholder) < 0)
 	{
 		LOG_ERROR("stream_reader_get_cisco_cluster_management_protocol: failed to read cluster netmask\n");
 		cisco_cluster_management_protocol_delete(clusterProtocol);
