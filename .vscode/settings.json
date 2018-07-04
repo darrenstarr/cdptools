@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "cdp_neighbor.h": "c",
+        "cdp_packet.h": "c",
+        "cdp_proc.h": "c"
+    }
+}
