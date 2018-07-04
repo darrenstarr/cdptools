@@ -64,7 +64,38 @@ static int __init register_cdp_multicast(void)
         if(dev->type == ARPHRD_ETHER)
         {
             rc = dev_mc_add_global(dev, cdpMulticastAddress);
-            printk(KERN_INFO "found [%s], rc=%d\n", dev->name, rc);
+            if(rc == 0)
+                printk(KERN_INFO "cdp: failed to register 01:00:0C:CC:CC:CC on interface %s\n", dev->name);
+            else
+                printk(KERN_INFO "cdp: registered 01:00:0C:CC:CC:CC on interface %s\n", dev->name);
+        }
+
+        dev = next_net_device(dev);
+    }
+
+    read_unlock(&dev_base_lock);
+
+    return 0;
+}
+
+static int __init unregister_cdp_multicast(void)
+{
+    struct net_device *dev;
+    static const uint8_t cdpMulticastAddress[] = { 0x01, 0x00, 0x0C, 0xCC, 0xCC, 0xCC };    
+
+    read_lock(&dev_base_lock);
+
+    dev = first_net_device(&init_net);
+    while (dev) {
+        int rc;
+
+        if(dev->type == ARPHRD_ETHER)
+        {
+            rc = dev_mc_del_global(dev, cdpMulticastAddress);
+            if(rc == 0)
+                printk(KERN_INFO "cdp: failed to deregister 01:00:0C:CC:CC:CC from interface %s\n", dev->name);
+            else
+                printk(KERN_INFO "cdp: deregistered 01:00:0C:CC:CC:CC from interface %s\n", dev->name);
         }
 
         dev = next_net_device(dev);
@@ -133,6 +164,8 @@ static void __exit cdp_module_exit(void)
 {    
 	del_timer(&cdp_timer);
 
+    unregister_cdp_multicast();
+    
     printk(KERN_INFO "cdp: Goodbye %s from the Cisco Discovery Protocol module!\n", name);
 
     unregister_snap_client(cdp_snap_datalink_protocol);
