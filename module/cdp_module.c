@@ -53,16 +53,19 @@ void cdp_timer_event_handler( struct timer_list *data )
 static int __init register_cdp_multicast(void)
 {
     struct net_device *dev;
-    static const uint8_t cdpMulticastAddress[] = { 0x01, 0x00, 0x0C, 0x0C, 0x0C, 0x0C };
+    static const uint8_t cdpMulticastAddress[] = { 0x01, 0x00, 0x0C, 0xCC, 0xCC, 0xCC };    
 
     read_lock(&dev_base_lock);
 
     dev = first_net_device(&init_net);
     while (dev) {
-        if(dev->type == ARPHRD_ETHER)
-            printk(KERN_INFO "found [%s]\n", dev->name);
+        int rc;
 
-        dev_mc_add_global(dev, cdpMulticastAddress);
+        if(dev->type == ARPHRD_ETHER)
+        {
+            rc = dev_mc_add_global(dev, cdpMulticastAddress);
+            printk(KERN_INFO "found [%s], rc=%d\n", dev->name, rc);
+        }
 
         dev = next_net_device(dev);
     }
