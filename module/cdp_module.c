@@ -65,9 +65,9 @@ static int __init register_cdp_multicast(void)
         {
             rc = dev_mc_add_global(dev, cdpMulticastAddress);
             if(rc == 0)
-                printk(KERN_INFO "cdp: failed to register 01:00:0C:CC:CC:CC on interface %s\n", dev->name);
-            else
                 printk(KERN_INFO "cdp: registered 01:00:0C:CC:CC:CC on interface %s\n", dev->name);
+            else
+                printk(KERN_INFO "cdp: failed to register 01:00:0C:CC:CC:CC on interface %s\n", dev->name);
         }
 
         dev = next_net_device(dev);
@@ -93,9 +93,9 @@ static int __init unregister_cdp_multicast(void)
         {
             rc = dev_mc_del_global(dev, cdpMulticastAddress);
             if(rc == 0)
-                printk(KERN_INFO "cdp: failed to deregister 01:00:0C:CC:CC:CC from interface %s\n", dev->name);
-            else
                 printk(KERN_INFO "cdp: deregistered 01:00:0C:CC:CC:CC from interface %s\n", dev->name);
+            else
+                printk(KERN_INFO "cdp: failed to deregister 01:00:0C:CC:CC:CC from interface %s\n", dev->name);
         }
 
         dev = next_net_device(dev);
@@ -165,7 +165,7 @@ static void __exit cdp_module_exit(void)
 	del_timer(&cdp_timer);
 
     unregister_cdp_multicast();
-    
+
     printk(KERN_INFO "cdp: Goodbye %s from the Cisco Discovery Protocol module!\n", name);
 
     unregister_snap_client(cdp_snap_datalink_protocol);
