@@ -19,6 +19,9 @@ struct cdp_neighbor_list *cdp_neighbors;
 /** The SNAP OUI (00:00:0C) for Cisco and the protocol Id 0x2000 for CDP */
 static unsigned char cdp_snap_id[5] = { 0x0, 0x0, 0x0c, 0x20, 0x00 };
 
+/** The Multicast MAC address to which CDP frames are sent. */
+static const uint8_t cdp_multicast_address[] = { 0x01, 0x00, 0x0C, 0xCC, 0xCC, 0xCC };    
+
 /** Handle to the datalink protocol for CDP */
 static struct datalink_proto *cdp_snap_datalink_protocol;
 
@@ -28,7 +31,7 @@ static struct timer_list cdp_timer;
 /** The interval which should be waited for between running CDP processes */
 static const unsigned long cdp_timer_interval_ms = 3000;
 
-void cdp_timer_event_handler( struct timer_list *data )
+static void cdp_timer_event_handler( struct timer_list *data )
 {
     unsigned long flags;
     int rc;
@@ -50,10 +53,12 @@ void cdp_timer_event_handler( struct timer_list *data )
     }
 }
 
+/** Registers the CDP multicast receiver address to all Ethernet adapters on the system.
+  *  @return 0 on success, a negative value on error.
+  */
 static int __init register_cdp_multicast(void)
 {
     struct net_device *dev;
-    static const uint8_t cdpMulticastAddress[] = { 0x01, 0x00, 0x0C, 0xCC, 0xCC, 0xCC };    
 
     read_lock(&dev_base_lock);
 
@@ -63,7 +68,7 @@ static int __init register_cdp_multicast(void)
 
         if(dev->type == ARPHRD_ETHER)
         {
-            rc = dev_mc_add_global(dev, cdpMulticastAddress);
+            rc = dev_mc_add_global(dev, cdp_multicast_address);
             if(rc == 0)
                 printk(KERN_INFO "cdp: registered 01:00:0C:CC:CC:CC on interface %s\n", dev->name);
             else
@@ -78,10 +83,12 @@ static int __init register_cdp_multicast(void)
     return 0;
 }
 
-static int __init unregister_cdp_multicast(void)
+/** Deregisters the CDP multicast receiver address from all Ethernet adapters on the system.
+  *  @return 0 on success, a negative value on error.
+  */
+static int unregister_cdp_multicast(void)
 {
     struct net_device *dev;
-    static const uint8_t cdpMulticastAddress[] = { 0x01, 0x00, 0x0C, 0xCC, 0xCC, 0xCC };    
 
     read_lock(&dev_base_lock);
 
@@ -91,7 +98,7 @@ static int __init unregister_cdp_multicast(void)
 
         if(dev->type == ARPHRD_ETHER)
         {
-            rc = dev_mc_del_global(dev, cdpMulticastAddress);
+            rc = dev_mc_del_global(dev, cdp_multicast_address);
             if(rc == 0)
                 printk(KERN_INFO "cdp: deregistered 01:00:0C:CC:CC:CC from interface %s\n", dev->name);
             else
@@ -118,10 +125,12 @@ static int __init cdp_module_init(void){
 
     printk(KERN_INFO "cdp: Hello %s from the Cisco Discovery Protocol module!\n", name);
 
+    /* Initialize the CDP neighbor list for storing CDP data */
     cdp_neighbors = cdp_neighbor_list_new();
     if(cdp_neighbors == NULL)
         return -ENOMEM;
 
+    /* Create the /proc/net/cdp file system */
     rc = cdp_proc_init();
     if(rc < 0)
     {
@@ -130,6 +139,7 @@ static int __init cdp_module_init(void){
         return rc;
     }
 
+    /* Register a time to process cleanup events */
     timer_setup(&cdp_timer, cdp_timer_event_handler, 0);
     rc = mod_timer(&cdp_timer, jiffies + msecs_to_jiffies(cdp_timer_interval_ms));
     if(rc < 0)
@@ -140,8 +150,8 @@ static int __init cdp_module_init(void){
         return -ENOMEM;
     }
 
+    /* Register the packet receive handler for incoming CDP packets */
     cdp_snap_datalink_protocol = register_snap_client(cdp_snap_id, cdp_receive);
-
     if (!cdp_snap_datalink_protocol)
     {
 		printk(KERN_CRIT "cdp: Unable to register with psnap\n");
@@ -151,6 +161,7 @@ static int __init cdp_module_init(void){
         return -ENOMEM;
 	}
 
+    /* Register the CDP MAC address on the interfaces so the Ethernet MAC will permit the frames */
     register_cdp_multicast();
 
     return rc;
