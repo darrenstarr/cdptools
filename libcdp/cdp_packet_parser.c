@@ -18,11 +18,11 @@ int cdp_parse_packet(struct stream_reader*reader, struct cdp_packet **neighbor)
 	if (stream_reader_get8(reader, &cdpVersion) < 0)
 		return -1;
 
-	if (cdpVersion != 2)
-	{
-		LOG_ERROR("cdp_parse_packet: CDP version is not 2.\n");
-		return -1;
-	}
+	// if (cdpVersion != 2)
+	// {
+	// 	LOG_ERROR("cdp_parse_packet: CDP version is not 2.\n");
+	// 	return -1;
+	// }
 
 	LOG_DEBUG("cdp_parse_packet: Reading TTL\n");
 	if (stream_reader_get8(reader, &ttl) < 0)
@@ -477,6 +477,31 @@ int cdp_parse_packet(struct stream_reader*reader, struct cdp_packet **neighbor)
 						power_over_ethernet_availability_delete(poe);
 						return -1;
 					}
+				}
+				break;
+
+			case CdpTlvStartupNativeVlan:
+				{
+					char *startupNativeVlan;
+
+					if (stream_reader_get_string(reader, &startupNativeVlan, (size_t)(tlvLength - 4)) < 0)
+					{
+						LOG_ERROR("cdp_parse_packet: Failed to read startup native VLAN string\n");
+						cdp_packet_delete(result);
+
+						return -1;
+					}
+
+					if (cdp_packet_set_startup_native_vlan(result, startupNativeVlan) < 0)
+					{
+						LOG_ERROR("cdp_parse_packet: Failed to set the startup native VLAN\n");
+						FREE_ARRAY(startupNativeVlan);
+						cdp_packet_delete(result);
+
+						return -1;
+					}
+
+					FREE_ARRAY(startupNativeVlan);
 				}
 				break;
 

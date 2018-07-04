@@ -17,7 +17,8 @@ enum ECdpTlv
 	CdpTlvTrustBitmap = 18,
 	CdpTlvUntrustedPortCoS = 19,
 	CdpTlvManagementAddesses = 22,
-	CdpTlvPowerAvailable = 26
+	CdpTlvPowerAvailable = 26,
+	CdpTlvStartupNativeVlan = 0x1007
 };
 
 #endif

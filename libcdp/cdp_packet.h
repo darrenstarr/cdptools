@@ -63,7 +63,7 @@ struct cdp_packet {
 	/** Model name */ // *
 	char *platform;
 
-	/** Cluster managment protocol */
+	/** Cluster management protocol */
 	struct cisco_hello_protocol *cluster_management_protocol;
 
 	/** IP address prefix */
@@ -89,6 +89,9 @@ struct cdp_packet {
 
 	/** The power of ethernet information for the link */
 	struct power_over_ethernet_availability *poe_availability;
+
+  /** The Cisco PnP Startup Native VLAN, formerly Web Management Port */
+  char *startup_native_vlan;
 };
 
 /** Constructs a new CDP neighbor object
@@ -105,10 +108,10 @@ struct cdp_packet *cdp_packet_new(uint8_t version, uint8_t ttl, uint16_t checksu
 void cdp_packet_delete(struct cdp_packet *neighbor);
 
 /** Sets the device ID of the neighbor
-*  @neighbor The CDP neighbor object to alter.
-*  @deviceId The new device Id string to set.
-*  @return 0 on success, a negative number upon failure.
-*/
+  *  @neighbor The CDP neighbor object to alter.
+  *  @deviceId The new device Id string to set.
+  *  @return 0 on success, a negative number upon failure.
+  */
 int cdp_packet_set_device_id(struct cdp_packet *neighbor, const char *deviceId);
 
 /** Clears all the addresses from the neighbor
@@ -252,6 +255,13 @@ int cdp_packet_set_management_address(struct cdp_packet *neighbor, off_t index, 
   *  This call takes ownership of the poe pointer.
   */
 int cdp_packet_set_poe_availability(struct cdp_packet *neighbor, struct power_over_ethernet_availability *poe);
+
+/** Sets the startup neighbor VLAN
+  *  @neighbor The CDP neighbor object to alter.
+  *  @startupNativeVlan The new device Id string to set.
+  *  @return 0 on success, a negative number upon failure.
+  */
+int cdp_packet_set_startup_native_vlan(struct cdp_packet *neighbor, const char *startupNativeVlan);
 
 /** Prints the contents of a CDP neighbor for debugging
   *  @neighbor The CDP neighbor object

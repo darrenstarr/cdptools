@@ -30,6 +30,7 @@ struct cdp_packet* cdp_packet_new(uint8_t version, uint8_t ttl, uint16_t checksu
 	result->untrusted_port_cos = NULL;
 	result->poe_availability = NULL;
 	result->vtp_management_domain = NULL;
+	result->startup_native_vlan = NULL;
 
 	return result;
 }
@@ -83,6 +84,9 @@ void cdp_packet_delete(struct cdp_packet *neighbor)
 
 	if (neighbor->poe_availability != NULL)
 		power_over_ethernet_availability_delete(neighbor->poe_availability);
+
+	if (neighbor->startup_native_vlan != NULL)
+		FREE_ARRAY(neighbor->startup_native_vlan);
 
 	FREE(neighbor);
 }
@@ -611,6 +615,41 @@ int cdp_packet_set_poe_availability(struct cdp_packet *neighbor, struct power_ov
 	return 0;
 }
 
+int cdp_packet_set_startup_native_vlan(struct cdp_packet *neighbor, const char *startupNativeVlan)
+{
+	size_t bufferLength;
+
+	if (neighbor == NULL)
+	{
+		LOG_CRITICAL("cdp_packet_set_startupNativeVlan: neighbor is null\n");
+		return -1;
+	}
+
+	if (neighbor->startup_native_vlan != NULL)
+		FREE_ARRAY(neighbor->startup_native_vlan);
+
+	if (startupNativeVlan == NULL)
+	{
+		neighbor->startup_native_vlan = NULL;
+	}
+	else
+	{
+		/* TODO: Is there a "safe way" to find the string length? Should I make a string class? */
+		bufferLength = strlen(startupNativeVlan) + 1;
+
+		neighbor->startup_native_vlan = ALLOC_NEW_ARRAY(char, bufferLength);
+
+		if (neighbor->startup_native_vlan == NULL)
+		{
+			LOG_ERROR("cdp_packet_set_startupNativeVlan: Failed to allocate memory for the new startup native VLAN string.\n");
+			return -1;
+		}
+
+		COPY_MEMORY(startupNativeVlan, neighbor->startup_native_vlan, bufferLength);
+	}
+
+	return 0;
+}
 
 void printAddress(const struct sockaddr *address)
 {

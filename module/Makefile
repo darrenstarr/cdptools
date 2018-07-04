@@ -3,6 +3,8 @@ cdp-objs := \
 	cdp_module.o \
 	cdp_proc.o \
 	cdp_proc_detail.o \
+	cdp_proc_json.o \
+	cdp_proc_print_sockaddr.o \
 	cdp_proc_summary.o \
 	cdp_receive.o \
 	cdp_neighbor.o \

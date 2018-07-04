@@ -178,8 +178,9 @@ int cdp_neighbor_set_frame_buffer(struct cdp_neighbor *neighbor, const unsigned 
     if(neighbor->frame_buffer != NULL && neighbor->frame_buffer_size < frame_buffer_length)
     {
         kfree(neighbor->frame_buffer);
+        neighbor->frame_buffer = NULL;
         neighbor->frame_buffer_length = 0;
-        neighbor->frame_buffer_size = 0;
+        neighbor->frame_buffer_size = 0;        
     }
 
     /* If there is no frame buffer, then allocate a new one */
