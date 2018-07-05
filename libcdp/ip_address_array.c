@@ -1,5 +1,5 @@
 #include "ip_address_array.h"
-#include "platform.h"
+#include "platform/platform.h"
 
 struct ip_address_array *ip_address_array_new(size_t count)
 {

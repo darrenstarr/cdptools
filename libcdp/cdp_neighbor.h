@@ -1,8 +1,8 @@
 #ifndef MOD_CDP_H
 #define MOD_CDP_H
 
-#include <linux/time.h>
-#include <linux/types.h>
+#include "platform/time.h"
+#include "platform/types.h"
 
 /** Cisco Discovery Protocol neighbor */
 struct cdp_neighbor

@@ -1,5 +1,5 @@
 #include "buffer_stream.h"
-#include "platform.h"
+#include "platform/platform.h"
 
 struct s_buffer_stream *s_buffer_stream_new(const uint8_t *data, size_t length)
 {

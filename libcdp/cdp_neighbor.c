@@ -1,11 +1,10 @@
-#include <linux/slab.h>
-#include <linux/string.h>
-
 #include "cdp_neighbor.h"
+#include "platform/platform.h"
+#include "platform/string.h"
 
 struct cdp_neighbor *cdp_neighbor_new(void)
 {
-    struct cdp_neighbor *result = kmalloc(sizeof(struct cdp_neighbor), GFP_ATOMIC);
+    struct cdp_neighbor *result = ALLOC_NEW(struct cdp_neighbor);
 
     if(result == NULL)
     {
@@ -40,13 +39,13 @@ void cdp_neighbor_delete(struct cdp_neighbor *neighbor)
         printk(KERN_CRIT "cdp_neighbor_delete: deleting neighbor which appears to still be in a list.\n");
 
     if(neighbor->device_name != NULL)
-        kfree(neighbor->device_name);
+        FREE_ARRAY(neighbor->device_name);
 
     if(neighbor->remote_mac != NULL)
-        kfree(neighbor->remote_mac);
+        FREE_ARRAY(neighbor->remote_mac);
 
     if(neighbor->frame_buffer != NULL)
-        kfree(neighbor->frame_buffer);
+        FREE_ARRAY(neighbor->frame_buffer);
 }
 
 int cdp_neighbor_set_device_type(struct cdp_neighbor *neighbor, int device_type)
@@ -79,11 +78,11 @@ int cdp_neighbor_set_device_name(struct cdp_neighbor *neighbor, const char *devi
     }
 
     if(neighbor->device_name != NULL)
-        kfree(neighbor->device_name);
+        FREE_ARRAY(neighbor->device_name);
 
     device_name_length = strlen(device_name);
 
-    neighbor->device_name = kmalloc((device_name_length + 1) * sizeof(char), GFP_ATOMIC);
+    neighbor->device_name = ALLOC_NEW_ARRAY(char, (device_name_length + 1));
     
     if(neighbor->device_name == NULL)
     {
@@ -124,10 +123,10 @@ int cdp_neighbor_set_remote_mac(struct cdp_neighbor *neighbor, const unsigned ch
             return 0;
         }
 
-        kfree(neighbor->remote_mac);
+        FREE_ARRAY(neighbor->remote_mac);
     }
 
-    neighbor->remote_mac = kmalloc(remote_mac_length, GFP_ATOMIC);
+    neighbor->remote_mac = ALLOC_NEW_ARRAY(unsigned char, remote_mac_length);
 
     if(neighbor->remote_mac == NULL)
     {
@@ -177,7 +176,7 @@ int cdp_neighbor_set_frame_buffer(struct cdp_neighbor *neighbor, const unsigned 
     /* If there is a frame buffer already but it's too small to contain the new frame buffer, then delete the old one */
     if(neighbor->frame_buffer != NULL && neighbor->frame_buffer_size < frame_buffer_length)
     {
-        kfree(neighbor->frame_buffer);
+        FREE_ARRAY(neighbor->frame_buffer);
         neighbor->frame_buffer = NULL;
         neighbor->frame_buffer_length = 0;
         neighbor->frame_buffer_size = 0;        
@@ -198,7 +197,7 @@ int cdp_neighbor_set_frame_buffer(struct cdp_neighbor *neighbor, const unsigned 
             return -1;
         }
 
-        neighbor->frame_buffer = kmalloc(frame_buffer_length, GFP_ATOMIC);
+        neighbor->frame_buffer = ALLOC_NEW_ARRAY(unsigned char, frame_buffer_length);
 
         if(neighbor->frame_buffer == NULL)
         {
@@ -318,7 +317,7 @@ struct cdp_neighbor_list *cdp_neighbor_list_new(void)
 {
     struct cdp_neighbor_list *result;
 
-    result = kmalloc(sizeof(struct cdp_neighbor_list), GFP_ATOMIC);
+    result = ALLOC_NEW(struct cdp_neighbor_list);
     if(result == NULL)
     {
         printk(KERN_CRIT "cdp_neighbor_list_new: failed to allocate memory for CDP neighbor list.\n");
@@ -340,7 +339,7 @@ void cdp_neighbor_list_delete(struct cdp_neighbor_list *list)
         return;
     }
 
-    kfree(list);
+    FREE(list);
 }
 
 void cdp_neighbor_list_clean(struct cdp_neighbor_list *list)

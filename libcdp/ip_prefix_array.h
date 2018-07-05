@@ -1,8 +1,8 @@
 #ifndef IP_PREFIX_ARRAY_H
 #define IP_PREFIX_ARRAY_H
 
-#include <linux/types.h>
 #include "ip_prefix.h"
+#include "platform/types.h"
 
 /** @summary A fixed length array of ip_prefixes */
 struct ip_prefix_array

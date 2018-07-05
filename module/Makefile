@@ -7,8 +7,8 @@ cdp-objs := \
 	cdp_proc_print_sockaddr.o \
 	cdp_proc_summary.o \
 	cdp_receive.o \
-	cdp_neighbor.o \
 	../libcdp/buffer_stream.o \
+	../libcdp/cdp_neighbor.o \
 	../libcdp/cdp_packet.o \
 	../libcdp/cdp_packet_parser.o \
 	../libcdp/cisco_cluster_management_protocol.o \
