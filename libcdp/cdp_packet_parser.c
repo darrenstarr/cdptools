@@ -1,11 +1,10 @@
-#include <linux/types.h>
-
 #include "cdp_packet.h"
 #include "cdp_packet_parser.h"
 #include "cisco_cluster_management_protocol.h"
 #include "ip_address_array.h"
-#include "platform.h"
 #include "power_over_ethernet_availability.h"
+#include "platform/platform.h"
+#include "platform/types.h"
 
 int cdp_parse_packet(struct stream_reader*reader, struct cdp_packet **neighbor)
 {

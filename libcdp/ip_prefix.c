@@ -1,5 +1,5 @@
 #include "ip_prefix.h"
-#include "platform.h"
+#include "platform/platform.h"
 
 struct ip_prefix *ip_prefix_new(void)
 {

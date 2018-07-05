@@ -1,5 +1,5 @@
 #include "cisco_cluster_management_protocol.h"
-#include "platform.h"
+#include "platform/platform.h"
 
 struct cisco_cluster_management_protocol *cisco_cluster_management_protocol_new(void)
 {

@@ -1,5 +1,5 @@
 #include "power_over_ethernet_availability.h"
-#include "platform.h"
+#include "platform/platform.h"
 
 struct power_over_ethernet_availability *power_over_ethernet_availability_new(void)
 {

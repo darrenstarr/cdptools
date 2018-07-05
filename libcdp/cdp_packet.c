@@ -1,5 +1,5 @@
 #include "cdp_packet.h"
-#include "platform.h"
+#include "platform/platform.h"
 
 struct cdp_packet* cdp_packet_new(uint8_t version, uint8_t ttl, uint16_t checksum)
 {

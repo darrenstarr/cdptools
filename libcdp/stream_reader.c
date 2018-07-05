@@ -1,7 +1,7 @@
 #include "buffer_stream.h"
-#include "platform.h"
-#include "platform_socket.h"
 #include "stream_reader.h"
+#include "platform/platform.h"
+#include "platform/socket.h"
 
 struct stream_reader *stream_reader_new(const uint8_t *data, size_t length)
 {

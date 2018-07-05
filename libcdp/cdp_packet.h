@@ -1,15 +1,14 @@
 #ifndef	_NET_CDP_H
 #define	_NET_CDP_H
 
-#include "platform_socket.h"
-#include "platform_types.h"
-
 #include "cisco_cluster_management_protocol.h"
 #include "ecdpnetworkduplex.h"
 #include "ecdptlv.h"
 #include "ip_address_array.h"
 #include "ip_prefix_array.h"
 #include "power_over_ethernet_availability.h"
+#include "platform/socket.h"
+#include "platform/types.h"
 
 /* the capability masks */
 

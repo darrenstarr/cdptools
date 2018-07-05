@@ -1,11 +1,11 @@
 #include <linux/init.h>             // Macros used to mark up functions e.g., __init __exit
 #include <linux/module.h>           // Core header for loading LKMs into the kernel
 #include <linux/kernel.h>           // Contains types, macros, functions for the kernel
+#include <linux/time.h>
 #include <linux/timer.h>
 #include <linux/netdevice.h>
 
 #include "cdp_module.h"
-#include "cdp_neighbor.h"
 #include "cdp_proc.h"
 #include "cdp_receive.h"
 
@@ -31,7 +31,7 @@ static struct timer_list cdp_timer;
 /** The interval which should be waited for between running CDP processes */
 static const unsigned long cdp_timer_interval_ms = 3000;
 
-static void cdp_timer_event_handler( struct timer_list *data )
+static void cdp_timer_event_handler(unsigned long data) // struct timer_list *data )
 {
     unsigned long flags;
     int rc;
@@ -140,7 +140,7 @@ static int __init cdp_module_init(void){
     }
 
     /* Register a time to process cleanup events */
-    timer_setup(&cdp_timer, cdp_timer_event_handler, 0);
+    setup_timer(&cdp_timer, cdp_timer_event_handler, 0);
     rc = mod_timer(&cdp_timer, jiffies + msecs_to_jiffies(cdp_timer_interval_ms));
     if(rc < 0)
     {

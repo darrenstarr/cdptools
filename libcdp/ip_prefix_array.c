@@ -1,5 +1,5 @@
 #include "ip_prefix_array.h"
-#include "platform.h"
+#include "platform/platform.h"
 
 struct ip_prefix_array *ip_prefix_array_new(size_t count)
 {

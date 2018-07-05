@@ -1,8 +1,8 @@
 #ifndef POWER_OVER_ETHERNET_AVAILABILITY_H
 #define POWER_OVER_ETHERNET_AVAILABILITY_H
 
-#include <linux/types.h>
 #include "stream_reader.h"
+#include "platform/types.h"
 
 /** Representation of PoE availability from the switch */
 struct power_over_ethernet_availability

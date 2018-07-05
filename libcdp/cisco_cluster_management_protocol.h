@@ -1,8 +1,8 @@
 #ifndef cisco_cluster_management_protocol_H
 #define cisco_cluster_management_protocol_H
 
-#include "platform_types.h"
-#include "platform_socket.h"
+#include "platform/socket.h"
+#include "platform/types.h"
 
 /** A container for data from the Cisco Cluster Management Protocol in CDP for cluster management
   */
