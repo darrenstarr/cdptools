@@ -78,7 +78,8 @@ The libcdp component is a classic case of NMH (not made here) as I simply can't 
 managed to include only the absolute basics of what I need. I did depend on things like the standard C libraries and the only confusing code in the cross-platform code (which uses macros ARG!!!) is the socket address structures which
 for some reason the kernel developers and C library developers couldn't seem to standardize naming on... even though the structures are basically identical.
 
-In any case, libcdp 
+In any case, libcdp is pretty self-contained and for the most part should be pretty solid. I'm not going to introduce more macros. If I get the chance, I'll eliminate as many as I can from what is already in the project. This is 2018
+and while I'm not a huge fan of wasted and unnecessary overhead, I do believe that programming in the preprocessor is a quick path to being bombarded with stupid bugs.
 
 ## 802.2 LLC SNAP
 
@@ -99,7 +100,7 @@ memory allocation in the /module directory.
 
 *** Update ***
 
-I've ported the lib
+I've ported the lib Windows, instrumented Google tests on Windows and Linux user mode. I've run against Valgrind and so far, things are looking very positive.
 
 ### Valgrind/Electric Fence/etc...
 
@@ -113,3 +114,22 @@ necessary, I'll pay someone to build me a virtual machine that is able to do thi
 
 This code is all kernel mode at this time. This is sadly because I don't know enough about kernel development to create a new address family for sockets. I'm not even sure if this can be done using a simple kernel module that isn't
 submitted for a pull request.
+
+### Scrubbing
+
+I hate the ideo of scrubbing as it's generally reserved for trying to cause issues with code through a blind and brute force method. As this is a kernel module, it is worth while to look into this.
+
+### MAC addresses flooding/spoofing
+
+It is theoretically possible that if a device running this code is connected to a non-CDP aware broadcast domain and someone were to intentionally spoof a lot of packets into the broadcast domain, it could become very memory
+intensive for the kernel. A good idea would be to limit the number of known neighbors either globally and/or per interface.
+
+### Configuration
+
+There are no real configuration settings at this time. I don't really understand the kernel module mechanisms for setting configuration. From what I have been told, there is some sort of configuration API that has been introduced
+to the kernel tree. As such, I'll consider whether to just make parameters or whether to use the configuration interface when the decision becomes interesting to me. At this time, I simply enable CDP on all Ethernet (or wireless)
+interfaces on the device as this fits my needs.
+
+### IPv6 in the address list
+
+Currently, the code does not enumerate and include IPv6 addresses in the transmitted packets. This should be corrected soon.
