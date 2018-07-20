@@ -1,7 +1,7 @@
 #ifndef ECDPTLV_H
 #define ECDPTLV_H
 
-enum ECdpTlv
+typedef enum
 {
 	CdpTlvDeviceId = 1,
 	CdpTlvAddresses = 2,
@@ -19,6 +19,6 @@ enum ECdpTlv
 	CdpTlvManagementAddesses = 22,
 	CdpTlvPowerAvailable = 26,
 	CdpTlvStartupNativeVlan = 0x1007
-};
+} ECdpTlv;
 
 #endif

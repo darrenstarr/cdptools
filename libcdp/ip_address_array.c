@@ -119,3 +119,84 @@ int ip_address_array_set_into(struct ip_address_array *array, off_t index, struc
 
 	return 0;
 }
+
+int ip_address_array_copy_into(struct ip_address_array *array, off_t index, struct sockaddr *address)
+{
+	struct sockaddr *copy;
+
+	if (array == NULL)
+	{
+		LOG_CRITICAL("ip_address_array_copy_into: array is NULL\n");
+		return -1;
+	}
+
+	if (index >= array->count)
+	{
+		LOG_CRITICAL("ip_address_array_copy_into: input past end\n");
+		return -1;
+	}
+
+	if (address == NULL)
+	{
+		copy = NULL;
+	}
+	else
+	{
+		switch (address->sa_family)
+		{
+			case AF_INET:
+				copy = ALLOC_NEW(struct sockaddr_in);
+				if (copy == NULL)
+				{
+					LOG_CRITICAL("ip_address_array_copy_into: failed to allocate memory to copy address\n");
+					return -1;
+				}
+				memcpy(copy, address, sizeof(struct sockaddr_in));
+				break;
+
+			case AF_INET6:
+				copy = ALLOC_NEW(struct sockaddr_in6);
+				if (copy == NULL)
+				{
+					LOG_CRITICAL("ip_address_array_copy_into: failed to allocate memory to copy address\n");
+					return -1;
+				}
+				memcpy(copy, address, sizeof(struct sockaddr_in6));
+				break;
+
+			default:
+				LOG_CRITICAL("ip_address_array_copy_into: unknown address type\n");
+				return -1;
+		}
+	}
+
+	if (array->addresses[index] != NULL)
+		FREE(array->addresses[index]);
+
+	array->addresses[index] = copy;
+
+	return 0;
+}
+
+int ip_address_array_set_into_ipv4_uint32(struct ip_address_array *array, off_t index, uint32_t address)
+{
+	struct sockaddr_in new_item;
+
+	if (array == NULL)
+	{
+		LOG_CRITICAL("ip_address_array_copy_into_ipv4_uint32: array is NULL\n");
+		return -1;
+	}
+
+	if (index >= array->count)
+	{
+		LOG_CRITICAL("ip_address_array_copy_into_ipv4_uint32: input past end\n");
+		return -1;
+	}
+
+	memset(&new_item, 0, sizeof(struct sockaddr_in));
+	new_item.sin_family = AF_INET;
+	new_item.sin_addr.s_addr = address;
+
+	return ip_address_array_copy_into(array, index, (struct sockaddr *)&new_item);
+}

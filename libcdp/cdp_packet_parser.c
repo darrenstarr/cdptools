@@ -6,7 +6,7 @@
 #include "platform/platform.h"
 #include "platform/types.h"
 
-int cdp_parse_packet(struct stream_reader*reader, struct cdp_packet **neighbor)
+int cdp_parse_packet(struct stream_reader *reader, struct cdp_packet **neighbor)
 {
 	uint8_t cdpVersion;
 	uint8_t ttl;
@@ -50,7 +50,7 @@ int cdp_parse_packet(struct stream_reader*reader, struct cdp_packet **neighbor)
 
 		initialPosition = stream_reader_get_position(reader);
 
-		LOG_DEBUG("cdp_parse_packet: Reading TLV type (%zd)\n", stream_reader_get_position(reader));
+		LOG_DEBUG("cdp_parse_packet: Reading TLV type (" FORMAT_OFF_T ")\n", stream_reader_get_position(reader));
 		if (stream_reader_get16(reader, &tlvType) < 0)
 		{
 			LOG_ERROR("cdp_parse_packet: Failed to read TLV type\n");
@@ -58,7 +58,7 @@ int cdp_parse_packet(struct stream_reader*reader, struct cdp_packet **neighbor)
 			return -1;
 		}
 
-		LOG_DEBUG("cdp_parse_packet: Reading TLV length (%zd)\n", stream_reader_get_position(reader));
+		LOG_DEBUG("cdp_parse_packet: Reading TLV length (" FORMAT_OFF_T ")\n", stream_reader_get_position(reader));
 		if (stream_reader_get16(reader, &tlvLength) < 0)
 		{
 			LOG_ERROR("cdp_parse_packet: Failed to read TLV length\n");
@@ -506,7 +506,7 @@ int cdp_parse_packet(struct stream_reader*reader, struct cdp_packet **neighbor)
 
 			default:
 				LOG_INFORMATIONAL(
-					"cdp_parse_packet: Encountered unknown TLV (0x%04X) at position %zd (0x%zX) with length %d bytes\n",
+					"cdp_parse_packet: Encountered unknown TLV (0x%04X) at position " FORMAT_OFF_T " (0x" FORMAT_HEX_OFF_T ") with length %d bytes\n",
 					tlvType,
 					initialPosition,
 					initialPosition,

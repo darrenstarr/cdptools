@@ -8,7 +8,7 @@ struct cdp_neighbor *cdp_neighbor_new(void)
 
     if(result == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_new: failed to allocate memory for CDP neighbor.\n");
+        LOG_CRITICAL("cdp_neighbor_new: failed to allocate memory for CDP neighbor.\n");
         return NULL;
     }
 
@@ -31,12 +31,12 @@ void cdp_neighbor_delete(struct cdp_neighbor *neighbor)
 {
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_delete: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_delete: neighbor is NULL.\n");
         return;
     }
 
     if(neighbor->next != NULL || neighbor->prev != NULL)
-        printk(KERN_CRIT "cdp_neighbor_delete: deleting neighbor which appears to still be in a list.\n");
+        LOG_CRITICAL("cdp_neighbor_delete: deleting neighbor which appears to still be in a list.\n");
 
     if(neighbor->device_name != NULL)
         FREE_ARRAY(neighbor->device_name);
@@ -52,7 +52,7 @@ int cdp_neighbor_set_device_type(struct cdp_neighbor *neighbor, int device_type)
 {
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_device_type: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_set_device_type: neighbor is NULL.\n");
         return -1;
     }
 
@@ -67,13 +67,13 @@ int cdp_neighbor_set_device_name(struct cdp_neighbor *neighbor, const char *devi
 
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_device_name: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_set_device_name: neighbor is NULL.\n");
         return -1;
     }
 
     if(device_name == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_device_name: device_name is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_set_device_name: device_name is NULL.\n");
         return -1;
     }
 
@@ -86,7 +86,7 @@ int cdp_neighbor_set_device_name(struct cdp_neighbor *neighbor, const char *devi
     
     if(neighbor->device_name == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_device_name: failed to allocate memory to store the new device_name\n");
+        LOG_CRITICAL("cdp_neighbor_set_device_name: failed to allocate memory to store the new device_name\n");
         return -1;
     }
 
@@ -99,19 +99,19 @@ int cdp_neighbor_set_remote_mac(struct cdp_neighbor *neighbor, const unsigned ch
 {
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_remote_mac: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_set_remote_mac: neighbor is NULL.\n");
         return -1;
     }
 
     if(remote_mac == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_remote_mac: remote_mac is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_set_remote_mac: remote_mac is NULL.\n");
         return -1;
     }
 
     if(remote_mac_length == 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_remote_mac: remote_mac_length is zero.\n");
+        LOG_CRITICAL("cdp_neighbor_set_remote_mac: remote_mac_length is zero.\n");
         return -1;
     }
 
@@ -130,7 +130,7 @@ int cdp_neighbor_set_remote_mac(struct cdp_neighbor *neighbor, const unsigned ch
 
     if(neighbor->remote_mac == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_remote_mac: failed to allocate memory to store the new remote MAC address\n");
+        LOG_CRITICAL("cdp_neighbor_set_remote_mac: failed to allocate memory to store the new remote MAC address\n");
         return -1;
     }
 
@@ -144,7 +144,7 @@ int cdp_neighbor_set_received_at(struct cdp_neighbor *neighbor, struct timespec 
 {
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_received_at: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_set_received_at: neighbor is NULL.\n");
         return -1;
     }
 
@@ -157,19 +157,19 @@ int cdp_neighbor_set_frame_buffer(struct cdp_neighbor *neighbor, const unsigned 
 {
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_frame_buffer: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_set_frame_buffer: neighbor is NULL.\n");
         return -1;
     }
 
     if(frame_buffer == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_frame_buffer: frame_buffer is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_set_frame_buffer: frame_buffer is NULL.\n");
         return -1;
     }
 
     if(frame_buffer_length == 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_frame_buffer: frame_buffer_length is 0.\n");
+        LOG_CRITICAL("cdp_neighbor_set_frame_buffer: frame_buffer_length is 0.\n");
         return -1;
     }
 
@@ -187,13 +187,13 @@ int cdp_neighbor_set_frame_buffer(struct cdp_neighbor *neighbor, const unsigned 
     {
         if(neighbor->frame_buffer_size > 0)
         {
-            printk(KERN_CRIT "cdp_neighbor_set_frame_buffer: neighbor->frame_buffer is null but neighbor->frame_buffer_size is greater than 0, frame buffer corrupt!\n");
+            LOG_CRITICAL("cdp_neighbor_set_frame_buffer: neighbor->frame_buffer is null but neighbor->frame_buffer_size is greater than 0, frame buffer corrupt!\n");
             return -1;
         }
 
         if(neighbor->frame_buffer_length > 0)
         {
-            printk(KERN_CRIT "cdp_neighbor_set_frame_buffer: neighbor->frame_buffer is null but neighbor->frame_buffer_length is greater than 0, frame buffer corrupt!\n");
+            LOG_CRITICAL("cdp_neighbor_set_frame_buffer: neighbor->frame_buffer is null but neighbor->frame_buffer_length is greater than 0, frame buffer corrupt!\n");
             return -1;
         }
 
@@ -201,7 +201,7 @@ int cdp_neighbor_set_frame_buffer(struct cdp_neighbor *neighbor, const unsigned 
 
         if(neighbor->frame_buffer == NULL)
         {
-            printk(KERN_CRIT "cdp_neighbor_set_frame_buffer: Failed to allocate memory to store frame buffer\n");
+            LOG_CRITICAL("cdp_neighbor_set_frame_buffer: Failed to allocate memory to store frame buffer\n");
             return -1;
         }
 
@@ -210,7 +210,7 @@ int cdp_neighbor_set_frame_buffer(struct cdp_neighbor *neighbor, const unsigned 
 
     if(neighbor->frame_buffer_size < frame_buffer_length)
     {
-        printk(KERN_CRIT "cdp_neighbor_set_frame_buffer: There isn't enough memory allocated for the new frame buffer at the point. Frame buffer corrupted!\n");
+        LOG_CRITICAL("cdp_neighbor_set_frame_buffer: There isn't enough memory allocated for the new frame buffer at the point. Frame buffer corrupted!\n");
         return -1;
     }
 
@@ -224,19 +224,19 @@ bool cdp_neighbor_device_name_equals(const struct cdp_neighbor *neighbor, const 
 {
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_device_name_equals: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_device_name_equals: neighbor is NULL.\n");
         return false;
     }
 
     if(neighbor->device_name == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_device_name_equals: neighbor->device_name is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_device_name_equals: neighbor->device_name is NULL.\n");
         return false;
     }
 
     if(device_name == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_device_name_equals: device_name is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_device_name_equals: device_name is NULL.\n");
         return false;
     }
 
@@ -247,19 +247,19 @@ bool cdp_neighbor_remote_mac_equals(const struct cdp_neighbor *neighbor, const u
 {
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_remote_mac_equals: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_remote_mac_equals: neighbor is NULL.\n");
         return false;
     }
 
     if(neighbor->remote_mac == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_remote_mac_equals: neighbor->remote_mac is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_remote_mac_equals: neighbor->remote_mac is NULL.\n");
         return false;
     }
 
     if(remote_mac == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_remote_mac_equals: remote_mac is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_remote_mac_equals: remote_mac is NULL.\n");
         return false;
     }
 
@@ -273,7 +273,7 @@ int cdp_neighbor_get_hold_time(const struct cdp_neighbor *neighbor)
 {
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_get_hold_time: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_get_hold_time: neighbor is NULL.\n");
         return -1;
     }
 
@@ -296,18 +296,18 @@ bool cdp_neighbor_is_expired(const struct cdp_neighbor *neighbor, struct timespe
 
     if(neighbor == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_is_expired: neighbor is NULL.\n");
+        LOG_CRITICAL("cdp_neighbor_is_expired: neighbor is NULL.\n");
         return false;
     }
 
     hold_time = cdp_neighbor_get_hold_time(neighbor);
     if(hold_time < 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_is_expired: could not read the hold time from the frame.\n");
+        LOG_CRITICAL("cdp_neighbor_is_expired: could not read the hold time from the frame.\n");
         return false;
     }
 
-    seconds_since_update = now.tv_sec - neighbor->received_at.tv_sec;
+    seconds_since_update = (int)(now.tv_sec - neighbor->received_at.tv_sec);
 
     return ((seconds_since_update + 1) >= hold_time) ? true : false;
 }
@@ -320,7 +320,7 @@ struct cdp_neighbor_list *cdp_neighbor_list_new(void)
     result = ALLOC_NEW(struct cdp_neighbor_list);
     if(result == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_new: failed to allocate memory for CDP neighbor list.\n");
+        LOG_CRITICAL("cdp_neighbor_list_new: failed to allocate memory for CDP neighbor list.\n");
         return NULL;
     }
 
@@ -335,7 +335,7 @@ void cdp_neighbor_list_delete(struct cdp_neighbor_list *list)
 {
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_delete: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_delete: list is NULL\n");
         return;
     }
 
@@ -348,7 +348,7 @@ void cdp_neighbor_list_clean(struct cdp_neighbor_list *list)
 
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_clean: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_clean: list is NULL\n");
         return;
     }
 
@@ -365,7 +365,7 @@ void cdp_neighbor_list_clean_and_delete(struct cdp_neighbor_list *list)
 {
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_clean_and_delete: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_clean_and_delete: list is NULL\n");
         return;
     }
 
@@ -380,7 +380,7 @@ struct cdp_neighbor *cdp_neighbor_list_take_first(struct cdp_neighbor_list *list
 
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_take_first: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_take_first: list is NULL\n");
         return NULL;
     }
 
@@ -394,7 +394,7 @@ struct cdp_neighbor *cdp_neighbor_list_take_first(struct cdp_neighbor_list *list
         list->head = result->next;
     else
     {
-        printk(KERN_CRIT "cdp_neighbor_list_take_first: list head has previous element\n");
+        LOG_CRITICAL("cdp_neighbor_list_take_first: list head has previous element\n");
         result->prev->next = result->next;
     }
 
@@ -417,13 +417,13 @@ struct cdp_neighbor *cdp_neighbor_list_get_by_index(struct cdp_neighbor_list *li
 
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_by_index: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_by_index: list is NULL\n");
         return NULL;
     }
 
     if(index < 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_by_index: negative index requested\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_by_index: negative index requested\n");
         return NULL;
     }
 
@@ -451,7 +451,7 @@ struct cdp_neighbor *cdp_neighbor_list_get_by_identity(
 
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_by_identity: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_by_identity: list is NULL\n");
         return NULL;
     }
 
@@ -481,25 +481,25 @@ struct cdp_neighbor *cdp_neighbor_list_get_or_create_by_identity(
 
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_or_create_by_identity: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_or_create_by_identity: list is NULL\n");
         return NULL;
     }
 
     if(device_name == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_or_create_by_identity: device_name is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_or_create_by_identity: device_name is NULL\n");
         return NULL;
     }
 
     if(remote_mac == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_or_create_by_identity: remote_mac is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_or_create_by_identity: remote_mac is NULL\n");
         return NULL;
     }
 
     if(remote_mac_length == 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_or_create_by_identity: remote_mac_length is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_or_create_by_identity: remote_mac_length is NULL\n");
         return NULL;
     }
 
@@ -512,34 +512,34 @@ struct cdp_neighbor *cdp_neighbor_list_get_or_create_by_identity(
 
     if(result == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_or_create_by_identity: failed to allocate new entry.\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_or_create_by_identity: failed to allocate new entry.\n");
         return NULL;
     }
 
     if(cdp_neighbor_set_device_type(result, device_type) != 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_or_create_by_identity: failed to set the device type.\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_or_create_by_identity: failed to set the device type.\n");
         cdp_neighbor_delete(result);
         return NULL;
     }
 
     if(cdp_neighbor_set_device_name(result, device_name) != 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_or_create_by_identity: failed to set the device name.\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_or_create_by_identity: failed to set the device name.\n");
         cdp_neighbor_delete(result);
         return NULL;
     }
 
     if(cdp_neighbor_set_remote_mac(result, remote_mac, remote_mac_length) != 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_or_create_by_identity: failed to set the remote MAC address.\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_or_create_by_identity: failed to set the remote MAC address.\n");
         cdp_neighbor_delete(result);
         return NULL;
     }
 
     if(cdp_neighbor_list_append(list, result) != 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_get_or_create_by_identity: failed to add new item to the list. List may be corrupt!!!\n");
+        LOG_CRITICAL("cdp_neighbor_list_get_or_create_by_identity: failed to add new item to the list. List may be corrupt!!!\n");
         cdp_neighbor_delete(result);
         return NULL;
     }
@@ -557,7 +557,7 @@ struct cdp_neighbor *cdp_neighbor_list_take_by_identity(
 
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_take_by_identity: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_take_by_identity: list is NULL\n");
         return NULL;
     }
 
@@ -568,7 +568,7 @@ struct cdp_neighbor *cdp_neighbor_list_take_by_identity(
 
     if(cdp_neighbor_list_remove_item(list, result) < 0)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_take_by_identity: failed to remove item from list\n");
+        LOG_CRITICAL("cdp_neighbor_list_take_by_identity: failed to remove item from list\n");
         return NULL;
     }
 
@@ -579,19 +579,19 @@ int cdp_neighbor_list_append(struct cdp_neighbor_list *list, struct cdp_neighbor
 {
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_append: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_append: list is NULL\n");
         return -1;
     }
 
     if(item == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_append: item is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_append: item is NULL\n");
         return -1;
     }
 
     if (item->next != NULL || item->prev != NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_append: item appears to already be in a list.\n");
+        LOG_CRITICAL("cdp_neighbor_list_append: item appears to already be in a list.\n");
         return -1;
     }
 
@@ -599,7 +599,7 @@ int cdp_neighbor_list_append(struct cdp_neighbor_list *list, struct cdp_neighbor
     {
         if(list->head != NULL)
         {
-            printk(KERN_CRIT "cdp_neighbor_list_append: tail is null but head isn't. List is corrupt!\n");
+            LOG_CRITICAL("cdp_neighbor_list_append: tail is null but head isn't. List is corrupt!\n");
             return -1;
         }
 
@@ -612,7 +612,7 @@ int cdp_neighbor_list_append(struct cdp_neighbor_list *list, struct cdp_neighbor
 
     if(list->tail->next != NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_append: tail is not null but list tail has a next entry. List is corrupt!\n");
+        LOG_CRITICAL("cdp_neighbor_list_append: tail is not null but list tail has a next entry. List is corrupt!\n");
         return -1;
     }
 
@@ -627,13 +627,13 @@ int cdp_neighbor_list_remove_item(struct cdp_neighbor_list *list, struct cdp_nei
 {
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_remove_item: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_remove_item: list is NULL\n");
         return -1;
     }
 
     if(item == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_remove_item: item is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_remove_item: item is NULL\n");
         return -1;
     }
 
@@ -641,7 +641,7 @@ int cdp_neighbor_list_remove_item(struct cdp_neighbor_list *list, struct cdp_nei
     {
         if(list->head != item)
         {
-            printk(KERN_CRIT "cdp_neighbor_list_remove_item: found item has no previous but the list head doesn't point to it. List is corrupt!\n");
+            LOG_CRITICAL("cdp_neighbor_list_remove_item: found item has no previous but the list head doesn't point to it. List is corrupt!\n");
             return -1;
         }
 
@@ -651,7 +651,7 @@ int cdp_neighbor_list_remove_item(struct cdp_neighbor_list *list, struct cdp_nei
     {
         if(item->prev->next != item)
         {
-            printk(KERN_CRIT "cdp_neighbor_list_remove_item: found item's previous doesn't point back to it. List is corrupt!\n");
+            LOG_CRITICAL("cdp_neighbor_list_remove_item: found item's previous doesn't point back to it. List is corrupt!\n");
             return -1;
         }
 
@@ -662,7 +662,7 @@ int cdp_neighbor_list_remove_item(struct cdp_neighbor_list *list, struct cdp_nei
     {
         if(list->tail != item)
         {
-            printk(KERN_CRIT "cdp_neighbor_list_remove_item: result has no next, but the tail of the list didn't point to it. List is corrupt!\n");
+            LOG_CRITICAL("cdp_neighbor_list_remove_item: result has no next, but the tail of the list didn't point to it. List is corrupt!\n");
             return -1;
         }
 
@@ -672,7 +672,7 @@ int cdp_neighbor_list_remove_item(struct cdp_neighbor_list *list, struct cdp_nei
     {
         if(item->next->prev != item)
         {
-            printk(KERN_CRIT "cdp_neighbor_list_remove_item: found item's next doesn't point back to it. List is corrupt!\n");
+            LOG_CRITICAL("cdp_neighbor_list_remove_item: found item's next doesn't point back to it. List is corrupt!\n");
             return -1;
         }
 
@@ -691,7 +691,7 @@ int cdp_neighbor_list_purge_expired_neighbors(struct cdp_neighbor_list *list, st
 
     if(list == NULL)
     {
-        printk(KERN_CRIT "cdp_neighbor_list_purge_expired_neighbors: list is NULL\n");
+        LOG_CRITICAL("cdp_neighbor_list_purge_expired_neighbors: list is NULL\n");
         return -1;
     }
 
@@ -706,7 +706,7 @@ int cdp_neighbor_list_purge_expired_neighbors(struct cdp_neighbor_list *list, st
             item = item->prev;
             if(cdp_neighbor_list_remove_item(list, expired_item) < 0)
             {
-                printk(KERN_CRIT "cdp_neighbor_list_purge_expired_neighbors: failed to remove item. List  is most likely corrupted now\n");
+                LOG_CRITICAL("cdp_neighbor_list_purge_expired_neighbors: failed to remove item. List  is most likely corrupted now\n");
                 return -1;
             }
 

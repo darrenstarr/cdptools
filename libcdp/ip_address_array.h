@@ -2,6 +2,7 @@
 #define IP_ADDRESS_H
 
 #include "platform/socket.h"
+#include "platform/types.h"
 
 /** @summary Container for an array of IP addresses */
 struct ip_address_array
@@ -39,7 +40,24 @@ int ip_address_array_clear_and_delete(struct ip_address_array *array);
   *  @array: The array to alter
   *  @index: The index of the slot to occupy
   *  @address: The address to place at the index
+  *  @return: 0 on success, a negative number on failure
   */
 int ip_address_array_set_into(struct ip_address_array *array, off_t index, struct sockaddr *address);
+
+/** @summary Sets the value of an index within the array.
+  *  @array: The array to alter
+  *  @index: The index of the slot to occupy
+  *  @address: The address to place at the index
+  *  @return: 0 on success, a negative number on failure
+  */
+int ip_address_array_copy_into(struct ip_address_array *array, off_t index, struct sockaddr *address);
+
+/** @summary Sets the value of an index within the array.
+  *  @array: The array to alter
+  *  @index: The index of the slot to occupy
+  *  @address: The address to place at the index (this should be host order)
+  *  @return: 0 on success, a negative number on failure
+  */
+int ip_address_array_set_into_ipv4_uint32(struct ip_address_array *array, off_t index, uint32_t address);
 
 #endif

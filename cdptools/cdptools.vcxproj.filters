@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\libcdp\buffer_stream.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\cdp_neighbor.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\cdp_packet.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\cdp_packet_parser.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\cdp_software_version_string_linux.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\cisco_cluster_management_protocol.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\ip_address_array.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\ip_prefix.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\ip_prefix_array.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\power_over_ethernet_availability.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libcdp\stream_reader.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c" />
+    <ClCompile Include="..\libcdp\stream_writer.c">
+      <Filter>libcdp\Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="libcdp">
+      <UniqueIdentifier>{67b0e213-6d1f-4619-b342-2cedcb7a8b9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcdp\Header Files">
+      <UniqueIdentifier>{9b20ec2d-0b8d-45ed-b435-6e88da7b79e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcdp\Source Files">
+      <UniqueIdentifier>{e2a5803d-6751-4013-9c2f-ffd4679a106c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcdp\platform">
+      <UniqueIdentifier>{08cd59b5-1bbb-496c-8dde-a9e396a31942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="libcdp\platform\Header Files">
+      <UniqueIdentifier>{bb09d18a-b1ac-4b18-8eaf-8dce301cdb81}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\libcdp\buffer_stream.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\cdp_neighbor.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\cdp_packet.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\cdp_packet_parser.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\cisco_cluster_management_protocol.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\ecdpnetworkduplex.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\ecdptlv.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\ip_address_array.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\ip_prefix.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\ip_prefix_array.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\power_over_ethernet_availability.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\stream_reader.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\platform\socket.h">
+      <Filter>libcdp\platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\platform\string.h">
+      <Filter>libcdp\platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\platform\time.h">
+      <Filter>libcdp\platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\platform\types.h">
+      <Filter>libcdp\platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\platform\platform.h">
+      <Filter>libcdp\platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\platform\utsname.h">
+      <Filter>libcdp\platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\stream_writer.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\cdp_software_version_string.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\platform\checksum.h">
+      <Filter>libcdp\platform\Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

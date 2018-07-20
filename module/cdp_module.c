@@ -3,11 +3,14 @@
 #include <linux/kernel.h>           // Contains types, macros, functions for the kernel
 #include <linux/time.h>
 #include <linux/timer.h>
-#include <linux/netdevice.h>
+#include <linux/inetdevice.h>
 
 #include "cdp_module.h"
 #include "cdp_proc.h"
 #include "cdp_receive.h"
+#include "cdp_transmit.h"
+#include "../libcdp/cdp_software_version_string.h"
+#include "../libcdp/cdp_packet.h"
 
 static char *name = "cdp";                       ///< An example LKM argument -- default value is "world"
 module_param(name, charp, S_IRUGO);              ///< Param desc. charp = char ptr, S_IRUGO can be read/not changed
@@ -15,35 +18,51 @@ MODULE_PARM_DESC(name, "The name to display in /var/log/kern.log");  ///< parame
 
 rwlock_t cdp_neighbors_rw_lock = __RW_LOCK_UNLOCKED(cdp_neighbors_rw_lock);
 struct cdp_neighbor_list *cdp_neighbors;
+char *cdp_software_version_string = NULL;
+char *cdp_device_id_string = NULL;
+/*const*/ uint8_t cdp_multicast_address[] = { 0x01, 0x00, 0x0C, 0xCC, 0xCC, 0xCC };    
 
 /** The SNAP OUI (00:00:0C) for Cisco and the protocol Id 0x2000 for CDP */
 static unsigned char cdp_snap_id[5] = { 0x0, 0x0, 0x0c, 0x20, 0x00 };
 
-/** The Multicast MAC address to which CDP frames are sent. */
-static const uint8_t cdp_multicast_address[] = { 0x01, 0x00, 0x0C, 0xCC, 0xCC, 0xCC };    
-
 /** Handle to the datalink protocol for CDP */
-static struct datalink_proto *cdp_snap_datalink_protocol;
+struct datalink_proto *cdp_snap_datalink_protocol;
 
 /** A timer for running cleanup tasks and sending packets (TBD) */
 static struct timer_list cdp_timer;
 
 /** The interval which should be waited for between running CDP processes */
-static const unsigned long cdp_timer_interval_ms = 3000;
+static const unsigned long cdp_timer_interval_ms = 1000;
 
-static void cdp_timer_event_handler(unsigned long data) // struct timer_list *data )
+/** The interval which should be waited for between transmitting CDP frames */
+static const unsigned long cdp_transmit_interval_ms = 5000;
+
+/** The time when the last CDP packet was transmitted */
+static struct timespec last_frame_transmitted = { 0, 0 }; 
+
+static void cdp_timer_event_handler(
+    //unsigned long data 
+    struct timer_list *data
+)
 {
     unsigned long flags;
     int rc;
     struct timespec now;
     
     getnstimeofday(&now);
-    
+
     write_lock_irqsave(&cdp_neighbors_rw_lock, flags);
 
     cdp_neighbor_list_purge_expired_neighbors(cdp_neighbors, now);
 
     write_unlock_irqrestore(&cdp_neighbors_rw_lock, flags);
+
+    if(((now.tv_sec - last_frame_transmitted.tv_sec) * 1000) >= cdp_transmit_interval_ms)
+    {
+        //printk("Send me now\n");
+        cdp_transmit_packets();
+        last_frame_transmitted = now;
+    }
 
     rc = mod_timer(&cdp_timer, jiffies + msecs_to_jiffies(cdp_timer_interval_ms));
     if(rc < 0)
@@ -125,28 +144,60 @@ static int __init cdp_module_init(void){
 
     printk(KERN_INFO "cdp: Hello %s from the Cisco Discovery Protocol module!\n", name);
 
+    /* Initialize the platform software version string for transmitting */
+    if (generate_cdp_software_version_string(&cdp_software_version_string) < 0)
+	{
+		printk(KERN_CRIT "cdp: Failed to generate software version\n");
+		return -1;
+	}
+    printk(KERN_INFO "cdp:\n%s\n",cdp_software_version_string);
+
+    /* Initialize the platform device ID string for transmitting */
+    if (generate_cdp_device_id_string(&cdp_device_id_string) < 0)
+    {
+        printk(KERN_CRIT "cdp: Failed to generate the device ID string\n");
+        kfree(cdp_software_version_string);
+
+        return -1;
+    }
+    printk(KERN_INFO "cdp: device ID: %s\n", cdp_device_id_string);
+
     /* Initialize the CDP neighbor list for storing CDP data */
     cdp_neighbors = cdp_neighbor_list_new();
     if(cdp_neighbors == NULL)
+    {
+        kfree(cdp_software_version_string);
+        kfree(cdp_device_id_string);
         return -ENOMEM;
+    }
 
     /* Create the /proc/net/cdp file system */
     rc = cdp_proc_init();
     if(rc < 0)
     {
-        printk("Failed to allocate proc/net/cdp\n");
+        printk(KERN_CRIT "cdp: Failed to allocate proc/net/cdp\n");
         cdp_neighbor_list_clean_and_delete(cdp_neighbors);
+        kfree(cdp_software_version_string);
+        kfree(cdp_device_id_string);
         return rc;
     }
 
     /* Register a time to process cleanup events */
-    setup_timer(&cdp_timer, cdp_timer_event_handler, 0);
+    timer_setup(
+    //setup_timer(
+        &cdp_timer,
+        cdp_timer_event_handler,
+        0
+    );
+    
     rc = mod_timer(&cdp_timer, jiffies + msecs_to_jiffies(cdp_timer_interval_ms));
     if(rc < 0)
     {
 		printk(KERN_CRIT "cdp: Unable to register cleanup timer\n" );
         cdp_proc_exit();
         cdp_neighbor_list_clean_and_delete(cdp_neighbors);
+        kfree(cdp_software_version_string);
+        kfree(cdp_device_id_string);
         return -ENOMEM;
     }
 
@@ -158,6 +209,8 @@ static int __init cdp_module_init(void){
         del_timer(&cdp_timer);
         cdp_proc_exit();
         cdp_neighbor_list_clean_and_delete(cdp_neighbors);
+        kfree(cdp_software_version_string);
+        kfree(cdp_device_id_string);
         return -ENOMEM;
 	}
 
@@ -185,6 +238,10 @@ static void __exit cdp_module_exit(void)
     cdp_proc_exit();
 
     cdp_neighbor_list_clean_and_delete(cdp_neighbors);
+
+    kfree(cdp_device_id_string);
+
+    kfree(cdp_software_version_string);
 }
 
 /** @brief A module must use the module_init() module_exit() macros from linux/init.h, which
