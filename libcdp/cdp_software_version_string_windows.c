@@ -21,7 +21,6 @@ int generate_cdp_software_version_string(char **result)
 		"Version - %d.%d\n"
 		"Build - %d\n"
 		"Service pack - %s\n"
-		"\n"
 		;
 
 	char work_buffer[

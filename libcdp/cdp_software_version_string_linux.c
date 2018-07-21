@@ -12,7 +12,7 @@ int generate_cdp_software_version_string(char **result)
 	ssize_t buffer_size_required;
 
 	static const char software_version_format[] =
-		"Linux\nhttps://www.kernel.org/\n%s\n%s\n";
+		"Linux\nhttps://www.kernel.org/\n%s\n%s";
 
 	char work_buffer[
 		sizeof(software_version_format) +
