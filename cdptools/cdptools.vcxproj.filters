@@ -69,6 +69,9 @@
     <ClInclude Include="..\libcdp\cdp_packet_parser.h">
       <Filter>libcdp\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\libcdp\cdp_software_version_string.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\libcdp\cisco_cluster_management_protocol.h">
       <Filter>libcdp\Header Files</Filter>
     </ClInclude>
@@ -93,6 +96,15 @@
     <ClInclude Include="..\libcdp\stream_reader.h">
       <Filter>libcdp\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\libcdp\stream_writer.h">
+      <Filter>libcdp\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\platform\checksum.h">
+      <Filter>libcdp\platform\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libcdp\platform\platform.h">
+      <Filter>libcdp\platform\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\libcdp\platform\socket.h">
       <Filter>libcdp\platform\Header Files</Filter>
     </ClInclude>
@@ -105,19 +117,7 @@
     <ClInclude Include="..\libcdp\platform\types.h">
       <Filter>libcdp\platform\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\libcdp\platform\platform.h">
-      <Filter>libcdp\platform\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\libcdp\platform\utsname.h">
-      <Filter>libcdp\platform\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libcdp\stream_writer.h">
-      <Filter>libcdp\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libcdp\cdp_software_version_string.h">
-      <Filter>libcdp\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\libcdp\platform\checksum.h">
       <Filter>libcdp\platform\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
