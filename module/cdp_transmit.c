@@ -5,6 +5,7 @@
 
 #include <linux/if_arp.h>
 #include <linux/inetdevice.h>
+#include <net/if_inet6.h>
 
 /** This is the length of a standard 802.2 frame header */
 static const size_t ethernet_header_length = 14;
@@ -15,6 +16,7 @@ static const size_t snap_header_length = 8;
 static ssize_t get_ip_address_list_from_net_device(const struct net_device *network_device, struct ip_address_array **result)
 {
     size_t address_count = 0;
+    off_t index = 0;
 
     *result = NULL;
 
@@ -26,6 +28,16 @@ static ssize_t get_ip_address_list_from_net_device(const struct net_device *netw
             address_count++;
             current_address = current_address->ifa_next;
         }
+    }
+
+    if (network_device->ip6_ptr != NULL)
+    {
+        struct inet6_ifaddr *current_address;
+        struct inet6_dev *idev = network_device->ip6_ptr;
+
+        list_for_each_entry(current_address, &idev->addr_list, if_list) {
+            address_count++;
+	    }
     }
 
     if(address_count == 0)
@@ -43,7 +55,6 @@ static ssize_t get_ip_address_list_from_net_device(const struct net_device *netw
 
     if (network_device->ip_ptr != NULL)
     {
-        off_t index = 0;
         struct in_ifaddr *current_address = network_device->ip_ptr->ifa_list;
 
         while(current_address != NULL)
@@ -57,6 +68,24 @@ static ssize_t get_ip_address_list_from_net_device(const struct net_device *netw
             }
 
             current_address = current_address->ifa_next;
+            index++;
+        }
+    }
+
+    if (network_device->ip6_ptr != NULL)
+    {
+        struct inet6_ifaddr *current_address;
+        struct inet6_dev *idev = network_device->ip6_ptr;
+
+        list_for_each_entry(current_address, &idev->addr_list, if_list) {
+            if(ip_address_array_set_into_ipv6_raw(*result, index, current_address->addr.in6_u.u6_addr8) < 0)
+            {
+                printk(KERN_CRIT "Failed to set ipv6 address\n");
+                ip_address_array_delete(*result);
+                *result = NULL;
+                return -1;
+            }
+
             index++;
         }
     }

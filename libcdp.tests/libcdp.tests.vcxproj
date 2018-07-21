@@ -34,6 +34,7 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClCompile Include="test_cdp_packet.cpp" />
+    <ClCompile Include="test_ip_address_array.cpp" />
     <ClCompile Include="test_software_version_string.cpp" />
     <ClCompile Include="test_stream_reader.cpp" />
   </ItemGroup>

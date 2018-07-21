@@ -182,6 +182,7 @@ TEST(CdpPacket, SetIPv4Addresses) {
 	cdp_packet_delete(packet);
 }
 
+/// Test that an CDP frame can be serialized
 TEST(CdpPacket, SerializePacket) {
 	// Create a software version string
 	static char *cdp_software_version_string = NULL;
@@ -218,11 +219,11 @@ TEST(CdpPacket, SerializePacket) {
 	ASSERT_GE(rc, 0);
 
 	// Set the port addresses
-	rc = cdp_packet_provision_address_array(packet, 2);
+	rc = cdp_packet_provision_address_array(packet, 3);
 	ASSERT_GE(rc, 0);
 	ASSERT_NE(nullptr, packet->addresses);
 	ASSERT_NE(nullptr, packet->addresses->addresses);
-	ASSERT_EQ(2, packet->addresses->count);
+	ASSERT_EQ(3, packet->addresses->count);
 
 	struct sockaddr_in ipv4_address;
 	memset(&ipv4_address, 0, sizeof(struct sockaddr_in));
@@ -237,6 +238,11 @@ TEST(CdpPacket, SerializePacket) {
 	ipv4_address.sin_addr.s_addr = htonl(0xC0A80101);
 	rc = cdp_packet_set_address_copy(packet, 1, (struct sockaddr *)&ipv4_address);
 	ASSERT_GE(rc, 0);
+
+	// Set the third address
+	const uint8_t test_address[16] = { 0xFE, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16 };
+	rc = ip_address_array_set_into_ipv6_raw(packet->addresses, 2, test_address);
+	ASSERT_GE(rc, 0);
 	
 	// Verify the first address
 	struct sockaddr_in *test = (struct sockaddr_in *)packet->addresses->addresses[0];
@@ -246,12 +252,16 @@ TEST(CdpPacket, SerializePacket) {
 	test = (struct sockaddr_in *)packet->addresses->addresses[1];
 	ASSERT_EQ(htonl(0xC0A80101), test->sin_addr.s_addr);
 
+	// Verify the third address
+	struct sockaddr_in6 *test6 = (struct sockaddr_in6 *)packet->addresses->addresses[2];
+	ASSERT_EQ(0, memcmp(IPv6Octets(test6), test_address, 16));
+
 	// Serialize the packet into a buffer
 	uint8_t frame_buffer[1500];
 	ssize_t frame_buffer_length = cdp_packet_serialize(packet, frame_buffer, sizeof(frame_buffer));
 	//printf("Frame buffer length %zd\n", frame_buffer_length);
 	ASSERT_GE(frame_buffer_length, 0);
-	ASSERT_EQ(frame_buffer_length, 188);
+	ASSERT_EQ(frame_buffer_length, 215);
 
 	// Delete the packet
 	cdp_packet_delete(packet);
@@ -260,6 +270,7 @@ TEST(CdpPacket, SerializePacket) {
 	FREE_ARRAY(cdp_software_version_string);
 }
 
+/// Test that a CDP frame can be serialized and parsed.
 TEST(CdpPacket, SerializeAndDeserializePacket) {
 	// Create a software version string
 	static char *cdp_software_version_string = NULL;
@@ -296,11 +307,11 @@ TEST(CdpPacket, SerializeAndDeserializePacket) {
 	ASSERT_GE(rc, 0);
 
 	// Set the port addresses
-	rc = cdp_packet_provision_address_array(packet, 2);
+	rc = cdp_packet_provision_address_array(packet, 3);
 	ASSERT_GE(rc, 0);
 	ASSERT_NE(nullptr, packet->addresses);
 	ASSERT_NE(nullptr, packet->addresses->addresses);
-	ASSERT_EQ(2, packet->addresses->count);
+	ASSERT_EQ(3, packet->addresses->count);
 
 	struct sockaddr_in ipv4_address;
 	memset(&ipv4_address, 0, sizeof(struct sockaddr_in));
@@ -316,20 +327,17 @@ TEST(CdpPacket, SerializeAndDeserializePacket) {
 	rc = cdp_packet_set_address_copy(packet, 1, (struct sockaddr *)&ipv4_address);
 	ASSERT_GE(rc, 0);
 
-	// Verify the first address
-	struct sockaddr_in *test = (struct sockaddr_in *)packet->addresses->addresses[0];
-	ASSERT_EQ(htonl(0x0A640101), test->sin_addr.s_addr);
-
-	// Verify the second address
-	test = (struct sockaddr_in *)packet->addresses->addresses[1];
-	ASSERT_EQ(htonl(0xC0A80101), test->sin_addr.s_addr);
+	// Set the third address
+	const uint8_t test_address[16] = { 0xFE, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x16 };
+	rc = ip_address_array_set_into_ipv6_raw(packet->addresses, 2, test_address);
+	ASSERT_GE(rc, 0);
 
 	// Serialize the packet into a buffer
 	uint8_t frame_buffer[1500];
 	ssize_t frame_buffer_length = cdp_packet_serialize(packet, frame_buffer, sizeof(frame_buffer));
 	//printf("Frame buffer length %zd\n", frame_buffer_length);
 	ASSERT_GE(frame_buffer_length, 0);
-	ASSERT_EQ(frame_buffer_length, 188);
+	ASSERT_EQ(frame_buffer_length, 215);
 
 	// Delete the packet
 	cdp_packet_delete(packet);
