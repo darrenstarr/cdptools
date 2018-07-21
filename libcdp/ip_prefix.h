@@ -3,27 +3,27 @@
 
 #include "platform/socket.h"
 
-/** @summary A representation of a network prefix */
+/** A representation of a network prefix */
 struct ip_prefix
 {
-	/** @summary The address component of the prefix */
+	/** The address component of the prefix */
 	struct sockaddr *network;
 
-	/** @summary The length in bits of the prefix */
+	/** The length in bits of the prefix */
 	int length;
 };
 
-/** @summary Constructor
+/** Constructor
   * @return The new instance or NULL on error
   */
 struct ip_prefix *ip_prefix_new(void);
 
-/** @summary Destructor
+/** Destructor
   * @param prefix The prefix to delete
   */
 void ip_prefix_delete(struct ip_prefix *prefix);
 
-/** @summary Sets the network address and length
+/** Sets the network address and length
   *
   * This function takes ownership of the network address and calls
   * to ip_prefix_delete will free the address.
