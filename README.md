@@ -133,3 +133,10 @@ interfaces on the device as this fits my needs.
 ### IPv6 in the address list
 
 Currently, the code does not enumerate and include IPv6 addresses in the transmitted packets. This should be corrected soon.
+
+### Licensing
+
+I'm going to speak with legal following the summer vacation. Up until now, we have talked about MIT or BSD licensing all our code, and in the case of libcdp, this shouldn't be a problem. However, in the case of
+the kernel module, this will likely have to be GPL or LGPL. We have no idea how to work with the GPL. Altogether, there is very little code which is Linux kernel specific in this project and as such, I don't
+want to be burdened with the legal overhead of the GPL. I can easily see this costing me a hundred or more working hours to sort out. So, we'll see what we can do. Obviously anything which must be licensed under
+the GPL will be, but we'll minimize that in favor of an open license like MIT on all the non-module code.
