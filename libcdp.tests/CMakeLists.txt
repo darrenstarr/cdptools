@@ -39,7 +39,6 @@ add_executable(
     libcdptests
     test_cdp_packet.cpp
     test_software_version_string.cpp
-    pch.cpp
     ../libcdp/buffer_stream.h
     ../libcdp/cdp_neighbor.h
     ../libcdp/cdp_packet.h
