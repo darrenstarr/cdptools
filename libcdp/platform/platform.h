@@ -35,7 +35,8 @@
 #define LOG_CRITICAL(...) fprintf(stderr, __VA_ARGS__)
 #define LOG_ERROR(...) fprintf(stderr, __VA_ARGS__)
 #define LOG_INFORMATIONAL(...) fprintf(stdout, __VA_ARGS__)
-#define LOG_DEBUG(...) fprintf(stdout, __VA_ARGS__)
+//#define LOG_DEBUG(...) fprintf(stdout, __VA_ARGS__)
+#define LOG_DEBUG(...)
 #define _P printf
 
 #define ALLOC_NEW(AllocationType) (malloc(sizeof(AllocationType)))
@@ -61,7 +62,8 @@
 #define LOG_CRITICAL(...) fprintf(stderr, __VA_ARGS__)
 #define LOG_ERROR(...) fprintf(stderr, __VA_ARGS__)
 #define LOG_INFORMATIONAL(...) fprintf(stdout, __VA_ARGS__)
-#define LOG_DEBUG(...) fprintf(stdout, __VA_ARGS__)
+//#define LOG_DEBUG(...) fprintf(stdout, __VA_ARGS__)
+#define LOG_DEBUG(...)
 #define _P printf
 
 #define ALLOC_NEW(AllocationType) (malloc(sizeof(AllocationType)))

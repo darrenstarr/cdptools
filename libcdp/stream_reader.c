@@ -1,5 +1,6 @@
 #include "buffer_stream.h"
 #include "stream_reader.h"
+#include "platform/checksum.h"
 #include "platform/platform.h"
 #include "platform/socket.h"
 
@@ -748,4 +749,19 @@ int stream_reader_get_cisco_cluster_management_protocol(struct stream_reader *re
 	*result = clusterProtocol;
 
 	return 0;
+}
+
+bool stream_reader_validate_checksum(struct stream_reader *reader)
+{
+	uint16_t checksum;
+
+	if (reader == NULL)
+	{
+		LOG_CRITICAL("stream_reader_validate_checksum: writer is NULL\n");
+		return false;
+	}
+
+	checksum = ip_compute_csum(reader->stream->data, (size_t)reader->stream->length);
+
+	return (checksum == 0) ? true : false;
 }

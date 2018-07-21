@@ -4,6 +4,16 @@
 
 #include "types.h"
 
+static inline uint16_t flip16(uint16_t value)
+{
+	return (uint16_t)
+		(
+		((value >> 8) & 0xFF) +
+			((value & 0xFF) << 8)
+			)
+		;
+}
+
 static inline uint16_t ip_compute_csum(const uint8_t *buffer, size_t buffer_length)
 {
 	size_t i;
@@ -20,7 +30,7 @@ static inline uint16_t ip_compute_csum(const uint8_t *buffer, size_t buffer_leng
 	checksum = (checksum & 0xffff) + (checksum >> 16);
 	checksum = (checksum & 0xffff) + (checksum >> 16);
 
-	return (uint16_t)(~checksum);
+	return (uint16_t)flip16((uint16_t)(~checksum));
 }
 
 #endif

@@ -143,4 +143,10 @@ int stream_reader_get_address(struct stream_reader *reader, struct sockaddr **re
   */
 int stream_reader_get_cisco_cluster_management_protocol(struct stream_reader *reader, struct cisco_cluster_management_protocol **result);
 
+/** Validate the checksum of the buffer
+  *  @param reader: The reader object
+  *  @return true on success, false on failure or error
+  */
+bool stream_reader_validate_checksum(struct stream_reader *reader);
+
 #endif
