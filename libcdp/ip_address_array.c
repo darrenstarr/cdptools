@@ -200,3 +200,32 @@ int ip_address_array_set_into_ipv4_uint32(struct ip_address_array *array, off_t 
 
 	return ip_address_array_copy_into(array, index, (struct sockaddr *)&new_item);
 }
+
+int ip_address_array_set_into_ipv6_raw(struct ip_address_array *array, off_t index, const uint8_t *address)
+{
+	struct sockaddr_in6 new_item;
+
+	if (array == NULL)
+	{
+		LOG_CRITICAL("ip_address_array_set_into_ipv6_raw: array is NULL\n");
+		return -1;
+	}
+
+	if (address == NULL)
+	{
+		LOG_CRITICAL("ip_address_array_set_into_ipv6_raw: address is NULL\n");
+		return -1;
+	}
+
+	if (index >= array->count)
+	{
+		LOG_CRITICAL("ip_address_array_set_into_ipv6_raw: input past end\n");
+		return -1;
+	}
+
+	memset(&new_item, 0, sizeof(struct sockaddr_in6));
+	new_item.sin6_family = AF_INET6;
+	memcpy(IPv6Octets(&new_item), address, 16);
+
+	return ip_address_array_copy_into(array, index, (struct sockaddr *)&new_item);
+}
