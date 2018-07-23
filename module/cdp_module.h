@@ -5,6 +5,20 @@
 #include <linux/netdevice.h>
 #include <net/datalink.h>
 
+#ifdef timer_setup
+    #define TIMER_SETUP         timer_setup
+
+    #ifndef TIMER_DATA_TYPE
+        #define TIMER_DATA_TYPE		struct timer_list *
+    #endif
+#else
+    #define TIMER_SETUP         setup_timer
+
+    #ifndef TIMER_DATA_TYPE
+        #define TIMER_DATA_TYPE		unsigned long
+    #endif
+#endif     
+
 /** A read/write spin-lock for controlling access to cdp_neighbors */
 extern rwlock_t cdp_neighbors_rw_lock;
 

@@ -41,8 +41,7 @@ static const unsigned long cdp_transmit_interval_ms = 5000;
 static struct timespec last_frame_transmitted = { 0, 0 }; 
 
 static void cdp_timer_event_handler(
-    //unsigned long data 
-    struct timer_list *data
+    TIMER_DATA_TYPE data
 )
 {
     unsigned long flags;
@@ -183,8 +182,7 @@ static int __init cdp_module_init(void){
     }
 
     /* Register a time to process cleanup events */
-    timer_setup(
-    //setup_timer(
+    TIMER_SETUP(
         &cdp_timer,
         cdp_timer_event_handler,
         0
