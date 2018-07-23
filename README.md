@@ -117,7 +117,7 @@ submitted for a pull request.
 
 ### Scrubbing
 
-I hate the ideo of scrubbing as it's generally reserved for trying to cause issues with code through a blind and brute force method. As this is a kernel module, it is worth while to look into this.
+I hate the idea of scrubbing as it's generally reserved for trying to cause issues with code through a blind and brute force method. As this is a kernel module, it is worth while to look into this.
 
 ### MAC addresses flooding/spoofing
 
